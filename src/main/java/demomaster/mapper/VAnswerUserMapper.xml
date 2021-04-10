@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.VAnswerUserDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.VAnswerUserVo">
+        <result column="user_name" property="userName"/>
+        <result column="question_id" property="questionId"/>
+        <result column="question_title" property="questionTitle"/>
+        <result column="answer_content" property="answerContent"/>
+        <result column="delete_flag" property="deleteFlag"/>
+        <result column="black_flag" property="blackFlag"/>
+        <result column="time" property="time"/>
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="approve_status" property="approveStatus"/>
+        <result column="user_delete_flag" property="userDeleteFlag"/>
+        <result column="black_list_user" property="blackListUser"/>
+        <result column="logo" property="logo"/>
+        <result column="pv_count" property="pvCount"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.VAnswerUserVo">
+        INSERT INTO `v_answer_user`(
+        `user_name` ,
+        `question_id` ,
+        `question_title` ,
+        `answer_content` ,
+        `delete_flag` ,
+        `black_flag` ,
+        `time` ,
+        `id` ,
+        `status` ,
+        `approve_status` ,
+        `user_delete_flag` ,
+        `black_list_user` ,
+        `logo` ,
+        `pv_count` ,
+        `user_id` 
+        )VALUE(
+          #{userName}  ,
+          #{questionId}  ,
+          #{questionTitle}  ,
+          #{answerContent}  ,
+          #{deleteFlag}  ,
+          #{blackFlag}  ,
+          #{time}  ,
+          #{id}  ,
+          #{status}  ,
+          #{approveStatus}  ,
+          #{userDeleteFlag}  ,
+          #{blackListUser}  ,
+          #{logo}  ,
+          #{pvCount}  ,
+          #{userId}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `v_answer_user`(
+        `user_name`,
+        `question_id`,
+        `question_title`,
+        `answer_content`,
+        `delete_flag`,
+        `black_flag`,
+        `time`,
+        `id`,
+        `status`,
+        `approve_status`,
+        `user_delete_flag`,
+        `black_list_user`,
+        `logo`,
+        `pv_count`,
+        `user_id`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.userName},
+            #{item.questionId},
+            #{item.questionTitle},
+            #{item.answerContent},
+            #{item.deleteFlag},
+            #{item.blackFlag},
+            #{item.time},
+            #{item.id},
+            #{item.status},
+            #{item.approveStatus},
+            #{item.userDeleteFlag},
+            #{item.blackListUser},
+            #{item.logo},
+            #{item.pvCount},
+            #{item.userId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.VAnswerUserVo"
+            parameterType="demomaster.vo.VAnswerUserVo">
+        SELECT
+        `user_name`,
+        `question_id`,
+        `question_title`,
+        `answer_content`,
+        `delete_flag`,
+        `black_flag`,
+        `time`,
+        `id`,
+        `status`,
+        `approve_status`,
+        `user_delete_flag`,
+        `black_list_user`,
+        `logo`,
+        `pv_count`,
+        `user_id`
+        FROM `v_answer_user`
+        <where>
+            1 = 1
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="questionTitle != null">
+                AND `question_title` = #{questionTitle}
+            </if>
+            <if test="answerContent != null">
+                AND `answer_content` = #{answerContent}
+            </if>
+            <if test="deleteFlag != null">
+                AND `delete_flag` = #{deleteFlag}
+            </if>
+            <if test="blackFlag != null">
+                AND `black_flag` = #{blackFlag}
+            </if>
+            <if test="time != null">
+                AND `time` = #{time}
+            </if>
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="approveStatus != null">
+                AND `approve_status` = #{approveStatus}
+            </if>
+            <if test="userDeleteFlag != null">
+                AND `user_delete_flag` = #{userDeleteFlag}
+            </if>
+            <if test="blackListUser != null">
+                AND `black_list_user` = #{blackListUser}
+            </if>
+            <if test="logo != null">
+                AND `logo` = #{logo}
+            </if>
+            <if test="pvCount != null">
+                AND `pv_count` = #{pvCount}
+            </if>
+            <if test="userId != null">
+                AND `user_id` = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.VAnswerUserVo">
+        UPDATE `v_answer_user`
+        <set>
+            <if test="source.userName != null">
+                `user_name` = #{source.userName},
+            </if>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId},
+            </if>
+            <if test="source.questionTitle != null">
+                `question_title` = #{source.questionTitle},
+            </if>
+            <if test="source.answerContent != null">
+                `answer_content` = #{source.answerContent},
+            </if>
+            <if test="source.deleteFlag != null">
+                `delete_flag` = #{source.deleteFlag},
+            </if>
+            <if test="source.blackFlag != null">
+                `black_flag` = #{source.blackFlag},
+            </if>
+            <if test="source.time != null">
+                `time` = #{source.time},
+            </if>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.status != null">
+                `status` = #{source.status},
+            </if>
+            <if test="source.approveStatus != null">
+                `approve_status` = #{source.approveStatus},
+            </if>
+            <if test="source.userDeleteFlag != null">
+                `user_delete_flag` = #{source.userDeleteFlag},
+            </if>
+            <if test="source.blackListUser != null">
+                `black_list_user` = #{source.blackListUser},
+            </if>
+            <if test="source.logo != null">
+                `logo` = #{source.logo},
+            </if>
+            <if test="source.pvCount != null">
+                `pv_count` = #{source.pvCount},
+            </if>
+            <if test="source.userId != null">
+                `user_id` = #{source.userId}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.questionTitle != null">
+                AND `question_title` = #{target.questionTitle}
+            </if>
+            <if test="target.answerContent != null">
+                AND `answer_content` = #{target.answerContent}
+            </if>
+            <if test="target.deleteFlag != null">
+                AND `delete_flag` = #{target.deleteFlag}
+            </if>
+            <if test="target.blackFlag != null">
+                AND `black_flag` = #{target.blackFlag}
+            </if>
+            <if test="target.time != null">
+                AND `time` = #{target.time}
+            </if>
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.approveStatus != null">
+                AND `approve_status` = #{target.approveStatus}
+            </if>
+            <if test="target.userDeleteFlag != null">
+                AND `user_delete_flag` = #{target.userDeleteFlag}
+            </if>
+            <if test="target.blackListUser != null">
+                AND `black_list_user` = #{target.blackListUser}
+            </if>
+            <if test="target.logo != null">
+                AND `logo` = #{target.logo}
+            </if>
+            <if test="target.pvCount != null">
+                AND `pv_count` = #{target.pvCount}
+            </if>
+            <if test="target.userId != null">
+                AND `user_id` = #{target.userId}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.VAnswerUserVo">
+        UPDATE `v_answer_user`
+        <set>
+            `user_name` = #{source.userName},
+            `question_id` = #{source.questionId},
+            `question_title` = #{source.questionTitle},
+            `answer_content` = #{source.answerContent},
+            `delete_flag` = #{source.deleteFlag},
+            `black_flag` = #{source.blackFlag},
+            `time` = #{source.time},
+            `id` = #{source.id},
+            `status` = #{source.status},
+            `approve_status` = #{source.approveStatus},
+            `user_delete_flag` = #{source.userDeleteFlag},
+            `black_list_user` = #{source.blackListUser},
+            `logo` = #{source.logo},
+            `pv_count` = #{source.pvCount},
+            `user_id` = #{source.userId}
+        </set>
+        <where>
+            1 =1
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.questionTitle != null">
+                AND `question_title` = #{target.questionTitle}
+            </if>
+            <if test="target.answerContent != null">
+                AND `answer_content` = #{target.answerContent}
+            </if>
+            <if test="target.deleteFlag != null">
+                AND `delete_flag` = #{target.deleteFlag}
+            </if>
+            <if test="target.blackFlag != null">
+                AND `black_flag` = #{target.blackFlag}
+            </if>
+            <if test="target.time != null">
+                AND `time` = #{target.time}
+            </if>
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.approveStatus != null">
+                AND `approve_status` = #{target.approveStatus}
+            </if>
+            <if test="target.userDeleteFlag != null">
+                AND `user_delete_flag` = #{target.userDeleteFlag}
+            </if>
+            <if test="target.blackListUser != null">
+                AND `black_list_user` = #{target.blackListUser}
+            </if>
+            <if test="target.logo != null">
+                AND `logo` = #{target.logo}
+            </if>
+            <if test="target.pvCount != null">
+                AND `pv_count` = #{target.pvCount}
+            </if>
+            <if test="target.userId != null">
+                AND `user_id` = #{target.userId}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.VAnswerUserVo">
+        DELETE FROM `v_answer_user`
+        <where>
+            1 =1
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="questionTitle != null">
+                AND `question_title` = #{questionTitle}
+            </if>
+            <if test="answerContent != null">
+                AND `answer_content` = #{answerContent}
+            </if>
+            <if test="deleteFlag != null">
+                AND `delete_flag` = #{deleteFlag}
+            </if>
+            <if test="blackFlag != null">
+                AND `black_flag` = #{blackFlag}
+            </if>
+            <if test="time != null">
+                AND `time` = #{time}
+            </if>
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="approveStatus != null">
+                AND `approve_status` = #{approveStatus}
+            </if>
+            <if test="userDeleteFlag != null">
+                AND `user_delete_flag` = #{userDeleteFlag}
+            </if>
+            <if test="blackListUser != null">
+                AND `black_list_user` = #{blackListUser}
+            </if>
+            <if test="logo != null">
+                AND `logo` = #{logo}
+            </if>
+            <if test="pvCount != null">
+                AND `pv_count` = #{pvCount}
+            </if>
+            <if test="userId != null">
+                AND `user_id` = #{userId}
+            </if>
+        </where>
+    </delete>
+
+
+</mapper>

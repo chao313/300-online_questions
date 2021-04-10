@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.TSystemParamDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.TSystemParamVo">
+        <result column="param_id" property="paramId"/>
+        <result column="param_value" property="paramValue"/>
+        <result column="param_desc" property="paramDesc"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.TSystemParamVo">
+        INSERT INTO `t_system_param`(
+        `param_id` ,
+        `param_value` ,
+        `param_desc` 
+        )VALUE(
+          #{paramId}  ,
+          #{paramValue}  ,
+          #{paramDesc}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `t_system_param`(
+        `param_id`,
+        `param_value`,
+        `param_desc`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.paramId},
+            #{item.paramValue},
+            #{item.paramDesc}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.TSystemParamVo"
+            parameterType="demomaster.vo.TSystemParamVo">
+        SELECT
+        `param_id`,
+        `param_value`,
+        `param_desc`
+        FROM `t_system_param`
+        <where>
+            1 = 1
+            <if test="paramId != null">
+                AND `param_id` = #{paramId}
+            </if>
+            <if test="paramValue != null">
+                AND `param_value` = #{paramValue}
+            </if>
+            <if test="paramDesc != null">
+                AND `param_desc` = #{paramDesc}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.TSystemParamVo">
+        UPDATE `t_system_param`
+        <set>
+            <if test="source.paramId != null">
+                `param_id` = #{source.paramId},
+            </if>
+            <if test="source.paramValue != null">
+                `param_value` = #{source.paramValue},
+            </if>
+            <if test="source.paramDesc != null">
+                `param_desc` = #{source.paramDesc}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.paramId != null">
+                AND `param_id` = #{target.paramId}
+            </if>
+            <if test="target.paramValue != null">
+                AND `param_value` = #{target.paramValue}
+            </if>
+            <if test="target.paramDesc != null">
+                AND `param_desc` = #{target.paramDesc}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.TSystemParamVo">
+        UPDATE `t_system_param`
+        <set>
+            `param_id` = #{source.paramId},
+            `param_value` = #{source.paramValue},
+            `param_desc` = #{source.paramDesc}
+        </set>
+        <where>
+            1 =1
+            <if test="target.paramId != null">
+                AND `param_id` = #{target.paramId}
+            </if>
+            <if test="target.paramValue != null">
+                AND `param_value` = #{target.paramValue}
+            </if>
+            <if test="target.paramDesc != null">
+                AND `param_desc` = #{target.paramDesc}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.TSystemParamVo">
+        DELETE FROM `t_system_param`
+        <where>
+            1 =1
+            <if test="paramId != null">
+                AND `param_id` = #{paramId}
+            </if>
+            <if test="paramValue != null">
+                AND `param_value` = #{paramValue}
+            </if>
+            <if test="paramDesc != null">
+                AND `param_desc` = #{paramDesc}
+            </if>
+        </where>
+    </delete>
+
+
+    <select id="queryByPrimaryKey" resultMap="resultMap"
+            resultType="demomaster.vo.TSystemParamVo">
+        SELECT
+        `param_id`,
+        `param_value`,
+        `param_desc`
+        FROM `t_system_param`
+        <where>
+            1 =1
+            AND `param_id` = #{paramId}
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM `t_system_param`
+        <where>
+            1 = 1
+               AND `param_id` = #{paramId}
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey"
+            parameterType="demomaster.vo.TSystemParamVo">
+        UPDATE `t_system_param`
+        <set>
+               <if test="source.paramValue != null">
+                   `param_value` = #{source.paramValue},
+               </if>
+               <if test="source.paramDesc != null">
+                   `param_desc` = #{source.paramDesc}
+               </if>
+        </set>
+        <where>
+            1 =1
+               AND `param_id` = #{target.paramId}
+        </where>
+    </update>
+
+</mapper>

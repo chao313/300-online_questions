@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.VQuestionAnswerSumDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.VQuestionAnswerSumVo">
+        <result column="answer_sum" property="answerSum"/>
+        <result column="question_id" property="questionId"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.VQuestionAnswerSumVo">
+        INSERT INTO `v_question_answer_sum`(
+        `answer_sum` ,
+        `question_id` 
+        )VALUE(
+          #{answerSum}  ,
+          #{questionId}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `v_question_answer_sum`(
+        `answer_sum`,
+        `question_id`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.answerSum},
+            #{item.questionId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.VQuestionAnswerSumVo"
+            parameterType="demomaster.vo.VQuestionAnswerSumVo">
+        SELECT
+        `answer_sum`,
+        `question_id`
+        FROM `v_question_answer_sum`
+        <where>
+            1 = 1
+            <if test="answerSum != null">
+                AND `answer_sum` = #{answerSum}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.VQuestionAnswerSumVo">
+        UPDATE `v_question_answer_sum`
+        <set>
+            <if test="source.answerSum != null">
+                `answer_sum` = #{source.answerSum},
+            </if>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.answerSum != null">
+                AND `answer_sum` = #{target.answerSum}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.VQuestionAnswerSumVo">
+        UPDATE `v_question_answer_sum`
+        <set>
+            `answer_sum` = #{source.answerSum},
+            `question_id` = #{source.questionId}
+        </set>
+        <where>
+            1 =1
+            <if test="target.answerSum != null">
+                AND `answer_sum` = #{target.answerSum}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.VQuestionAnswerSumVo">
+        DELETE FROM `v_question_answer_sum`
+        <where>
+            1 =1
+            <if test="answerSum != null">
+                AND `answer_sum` = #{answerSum}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+        </where>
+    </delete>
+
+
+</mapper>

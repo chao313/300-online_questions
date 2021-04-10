@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html class="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <title>个人主页 - 短书ShortBook</title>
+    <link rel="stylesheet" type="text/css" href="local/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="local/icon.css">
+    <link href="local/common.css" rel="stylesheet" type="text/css">
+    <link href="local/link.css" rel="stylesheet" type="text/css">
+    <link href="local/style.css" rel="stylesheet" type="text/css">
+    <link href="local/user.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="local/tomorrow.css">
+    <script src="local/jquery.2.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="local/jquery.form.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="aw-top-menu-wrap">
+    <div class="container" id="head">
+        <!-- logo -->
+        <div class="aw-logo hidden-xs">
+            <a href=""></a>
+        </div>
+        <!-- end logo -->
+        <!-- 搜索框 -->
+        <div class="aw-search-box  hidden-xs hidden-sm">
+            <form class="navbar-search" action="" id="global_search_form"
+                  method="post">
+                <input type="text" name="question_content"
+                       placeholder="搜索问题..."
+                       class="form-control"
+                       v-model="word"
+                >
+                <span title="搜索" id="global_search_btns" @click="routerToSearch()">搜索</span>
+            </form>
+        </div>
+        <!-- end 搜索框 -->
+        <!-- 导航 -->
+        <div class="aw-top-nav navbar">
+            <div class="navbar-header">
+                <button class="navbar-toggle pull-left">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <nav role="navigation" class="collapse navbar-collapse bs-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="javaScript:;" @click="routerToTag()">首页</a></li>
+                    <template v-for="(value,index) in TTagResults">
+                        <template v-if="index <= 4 ">
+                            <li>
+                                <a href="javaScript:;" @click="routerToTag(value.tag)"><span>{{value.tag}}</span></a>
+                            </li>
+                        </template>
+                    </template>
+                    <template v-if="TTagResults.length > 4 ">
+                        <li>
+                            <a style="font-weight:bold;">更多</a>
+                            <div class="dropdown-list pull-right">
+                                <ul id="extensions-nav-list">
+                                    <template v-for="(value,index) in TTagResults">
+                                        <template v-if="index > 4 ">
+                                            <li>
+                                                <a href="javaScript:;" @click="routerToTag(value.tag)"><span>{{value.tag}}</span></a>
+                                            </li>
+                                        </template>
+                                    </template>
+                                </ul>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </nav>
+        </div>
+        <template v-if="userName == null">
+            <div class="aw-user-nav">
+                <!-- 登陆&注册栏 -->
+                <a class="login btn btn-normal btn-primary" @click="routerToLogin">登录</a>
+                <a class="register btn btn-normal btn-success" @click="routerToLogin">注册</a>
+                <!-- end 登陆&注册栏 -->
+            </div>
+        </template>
+        <template v-else>
+            <!-- 用户栏 -->
+            <div class="aw-user-nav">
+                <!-- 登陆&注册栏 -->
+                <a href="" class="aw-user-nav-dropdown">
+                    <img :alt="userName" :src="path(TUserResult.logo)">{{userName}}
+                </a>
+                <div class="aw-dropdown dropdown-list pull-right">
+                    <ul class="aw-dropdown-list">
+                        <li><a href="javaScript:;" @click="routerToPerson(userName)">
+                            个人主页<span
+                                class="badge badge-important collapse" id="inbox_unread"
+                                style="display: none;">0</span></a>
+                        </li>
+                        <li><a href="javaScript:;" @click="routerToSetting()">设置</a></li>
+                        <li><a href="javaScript:;" @click="loginOut()">退出</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 提问 -->
+            <div class="aw-publish-btn">
+                <a id="header_publish" class="btn-primary" href="javaScript:;"
+                   @click="routerToPublish()">提问</a>
+            </div>
+            <!-- end 提问 -->
+        </template>
+    </div>
+</div>
+<div class="aw-container-wrap">
+    <div class="container" id="body">
+        <div class="row">
+            <div class="aw-content-wrap clearfix">
+                <div class="col-sm-12 col-md-9 aw-main-content" style="width: 100%;">
+                    <!-- 用户数据内容 -->
+                    <div class="aw-mod aw-user-detail-box">
+                        <div class="mod-head">
+                            <img :src="path(TUserResultView.logo)" :alt="TUserResultView.name">
+                            <span class="pull-right operate">
+                                <template v-if="userName != userNameView">
+                                 <template v-if="TFollowPersonResult.userName == null">
+                                    <a href="javascript:;" @click="follow()"
+                                       class="follow btn btn-normal btn-success pull-left "><span>关注</span></a>
+                                 </template>
+                                 <template v-else>
+                                    <a href="javascript:;" @click="unFollow()"
+                                       class="follow btn btn-normal btn-success active"><span>取消关注</span></a>
+                                 </template>
+                                </template>
+                            </span>
+                            <h1>{{userNameView}}<i></i></h1>
+                            <p class="aw-user-flag">
+                                {{TUserResultView.signature}}
+                            </p>
+                            <p class="aw-user-flag">
+                                {{TUserResultView.email}}
+                            </p>
+                            <br><br>
+                            <template v-if="userName != userNameView">
+                                <p class="aw-user-flag pull-right" @click="reportUser(userNameView)">
+                                    举报
+                                </p>
+                            </template>
+
+
+                        </div>
+                        <div class="mod-footer">
+                            <ul class="nav nav-tabs aw-nav-tabs">
+                                <li class="active">
+                                    <a href="#contents_questions" data-toggle="tab">发问<span class="badge">{{TQuestionsQueryBasePageHelperResult.total}}</span></a>
+                                </li>
+                                <li><a href="#contents_answers" data-toggle="tab">回复<span
+                                        class="badge">{{TAnswerQueryBasePageHelperResult.total}}</span></a></li>
+                                <li><a href="#contents_followed_question" data-toggle="tab">关注问题<span
+                                        class="badge">{{TFollowQuestionQueryBasePageHelperResult.total}}</span></a>
+                                </li>
+                                <li><a href="#contents_followes" data-toggle="tab">关注的人<span
+                                        class="badge">{{TFollowPersonQueryBasePageHelperResultFollowed.total}}</span></a>
+                                </li>
+                                <li><a href="#contents_followed" data-toggle="tab">被人关注<span
+                                        class="badge">{{VFollowPersonUserQueryBasePageHelperResult.total}}</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- end 用户数据内容 -->
+
+                    <div class="aw-user-center-tab">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="contents_questions">
+                                <div class="aw-mod">
+                                    <div class="mod-head">
+                                        <h2></h2>
+                                    </div>
+                                    <div class="mod-body">
+                                        <div class="aw-profile-publish-list">
+                                            <template v-if="TQuestionsQueryBasePageHelperResult.total != null"
+                                                      v-for="(value,index) in TQuestionsQueryBasePageHelperResult.list">
+                                                <template v-if="userName == userNameView">
+                                                    <div class="aw-item">
+                                                        <div class="aw-mod">
+                                                            <div class="mod-head">
+                                                                <h4 class="aw-hide-txt">
+
+                                                                    <a href="javascript:;"
+                                                                       @click="routerToQuestionDetail(value.id)"><span>{{value.title}}</span></a>
+                                                                    <template
+                                                                            v-if="value.blackFlag == 1 || value.blackFlag == 1 ">
+                                                                        <a href="javascript:;"
+                                                                           class="aw-question-tags-bg-red hidden-xs contribute"><span>已屏蔽</span></a>
+                                                                    </template>
+                                                                    <template v-else-if="value.isSave == 0">
+                                                                        <a href="javascript:;"
+                                                                           class="aw-question-tags hidden-xs contribute"><span>待发布</span></a>
+                                                                    </template>
+                                                                    <template v-else-if="value.status == 0">
+                                                                        <a href="javascript:;"
+                                                                           class="aw-question-tags-bg-green hidden-xs contribute"><span>发布中</span></a>
+                                                                    </template>
+                                                                    <template v-else-if="value.status == 1">
+                                                                        <a href="javascript:;"
+                                                                           class="aw-question-tags hidden-xs contribute"><span>已终结</span></a>
+                                                                    </template>
+                                                                    <a href="javascript:;"
+                                                                       @click="routerToQuestionDetail(value.id)"
+                                                                       class="aw-question-tags pull-right hidden-xs contribute"><span>查看</span></a>
+                                                                    <!--<a href="javascript:;"-->
+                                                                    <!--@click="routerToPublish(value.id)"-->
+                                                                    <!--class="aw-question-tags pull-right hidden-xs contribute"><span>修改</span></a>-->
+
+                                                                    <a href="javascript:;"
+                                                                       @click="updateTQuestionsByPrimaryKey(0, value.id)"
+                                                                       class="aw-question-tags-op-green pull-right hidden-xs contribute"><span>发布</span></a>
+                                                                    <a href="javascript:;"
+                                                                       @click="updateTQuestionsByPrimaryKey(1, value.id)"
+                                                                       class="aw-question-tags-op-red pull-right hidden-xs contribute"><span>终结</span></a>
+                                                                    <div class="mod-body">
+                                                                        <p class="text-color-999">
+                                                                            <a href="javascript:;"
+                                                                               class="aw-question-tags-op-blue"><span>{{value.tag}}</span></a>
+                                                                            • {{value.createTime}}
+                                                                        </p>
+                                                                    </div>
+                                                                </h4>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template v-else>
+
+                                                    <template
+                                                            v-if="value.blackFlag == 0 && value.blackFlag == 0 ">
+                                                        <div class="aw-item">
+                                                            <div class="aw-mod">
+                                                                <div class="mod-head">
+                                                                    <h4 class="aw-hide-txt">
+                                                                        <a href="javascript:;"
+                                                                           @click="routerToQuestionDetail(value.id)"><span>{{value.title}}</span></a>
+                                                                        <div class="mod-body">
+                                                                            <p class="text-color-999">
+                                                                                <a href="javascript:;"
+                                                                                   class="aw-question-tags-op-blue"><span>{{value.tag}}</span></a>
+                                                                                • {{value.createTime}}
+                                                                            </p>
+                                                                        </div>
+
+                                                                    </h4>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </template>
+
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="mod-footer">
+                                        <!-- 加载更多内容 -->
+                                        <div class="page-control">
+                                            <div class="mt10">
+                                                <template v-if="TQuestionsQueryBasePageHelperResult.total != null">
+                                                    <!--/** */:page-size 数一页的数量！！！-->
+                                                    <el-pagination
+                                                            v-show="TQuestionsQueryBasePageHelperResult.list.length > 0"
+                                                            background
+                                                            @current-change="handleCurrentChange"
+                                                            :current-page.sync="TQuestionsQueryBasePageHelperResult.pageNum"
+                                                            :page-size="TQuestionsQueryBasePageHelperResult.pageSize"
+                                                            layout="total, prev, pager, next, jumper"
+                                                            :total="TQuestionsQueryBasePageHelperResult.total">
+                                                    </el-pagination>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <!-- end 加载更多内容 -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="contents_answers">
+                                <div class="aw-mod">
+                                    <div class="mod-head">
+                                        <h3></h3>
+                                    </div>
+                                    <div class="mod-body">
+                                        <div class="aw-profile-answer-list">
+                                            <template v-if="TAnswerQueryBasePageHelperResult.total != null"
+                                                      v-for="(value,index) in TAnswerQueryBasePageHelperResult.list">
+                                                <div class="aw-item">
+                                                    <div class="aw-mod">
+                                                        <div class="mod-head">
+                                                            <h4 class="aw-hide-txt">
+                                                                <a href="javascript:;"
+                                                                   @click="routerToQuestionDetail(value.questionId)">
+                                                                    <span>{{value.questionTitle}}</span>
+                                                                </a>
+                                                                <template v-if="userName == userNameView">
+                                                                    <a href="javascript:;"
+                                                                       @click="deleteAnswer(value.id,value.questionId)"
+                                                                       class="aw-question-tags-op-red pull-right hidden-xs
+                                                                    contribute"><span>删除</span></a>
+                                                                    <a href="javascript:;"
+                                                                       @click="editAnswer(value.id,value.content)"
+                                                                       class="aw-question-tags-op-green pull-right hidden-xs
+                                                                    contribute"><span>编辑</span></a>
+                                                                </template>
+                                                                <div :id="'div'+value.id" v-show="value.showEdit">
+                                                                <textarea style="display: none;" :id="value.id"
+                                                                          rows="15"
+                                                                          name="question_detail"></textarea>
+                                                                    <div :id="'wmd-input'+value.id">
+
+                                                                    </div>
+                                                                    <a href="javascript:;" @click="cancalEditerAnswer()"
+                                                                       class="aw-question-tags-op-green pull-right hidden-xs
+                                                                    contribute"><span>取消编辑</span></a>
+                                                                    <a href="javascript:;"
+                                                                       @click="updateAnswer(value.id)"
+                                                                       class="aw-question-tags-op-green pull-right hidden-xs
+                                                                    contribute"><span>保存</span></a>
+                                                                </div>
+                                                            </h4>
+                                                        </div>
+                                                        <div class="mod-body">
+                                                            <span class="aw-border-radius-5 count pull-left">回复</span>
+                                                            <p class="text-color-999">
+                                                            <p v-html="value.content"></p></p>
+                                                            <p class="text-color-999">{{value.time}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="mod-footer">
+                                        <!-- 加载更多内容 -->
+                                        <div class="page-control">
+                                            <div class="mt10">
+                                                <template v-if="TAnswerQueryBasePageHelperResult.total != null">
+                                                    <!--/** */:page-size 数一页的数量！！！-->
+                                                    <el-pagination
+                                                            v-show="TAnswerQueryBasePageHelperResult.list.length > 0"
+                                                            background
+                                                            @current-change="handleCurrentChangeAnswer"
+                                                            :current-page.sync="TAnswerQueryBasePageHelperResult.pageNum"
+                                                            :page-size="TAnswerQueryBasePageHelperResult.pageSize"
+                                                            layout="total, prev, pager, next, jumper"
+                                                            :total="TAnswerQueryBasePageHelperResult.total">
+                                                    </el-pagination>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <!-- end 加载更多内容 -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="contents_followed_question">
+                                <div class="aw-mod">
+                                    <div class="mod-head">
+                                        <h3></h3>
+                                    </div>
+                                    <div class="mod-body">
+                                        <div class="aw-profile-publish-list">
+                                            <template v-if="TFollowQuestionQueryBasePageHelperResult.total != null"
+                                                      v-for="(value,index) in FollowQuestionList">
+                                                <div class="aw-item">
+                                                    <div class="aw-mod">
+                                                        <div class="mod-head">
+                                                            <h4 class="aw-hide-txt">
+                                                                <a href="javascript:;"
+                                                                   @click="routerToQuestionDetail(value.id)"><span>{{value.title}}</span></a>
+                                                            </h4>
+                                                        </div>
+                                                        <div class="mod-body">
+                                                            <p class="text-color-999">
+                                                                <a href="javascript:;"
+                                                                   class="aw-question-tags-op-blue"><span>{{value.tag}}</span></a>
+                                                                • {{value.createTime}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="mod-footer">
+                                        <!-- 加载更多内容 -->
+                                        <div class="page-control">
+                                            <div class="mt10">
+                                                <template v-if="TFollowQuestionQueryBasePageHelperResult.total != null">
+                                                    <!--/** */:page-size 数一页的数量！！！-->
+                                                    <el-pagination
+                                                            v-show="TFollowQuestionQueryBasePageHelperResult.list.length > 0"
+                                                            background
+                                                            @current-change="handleCurrentChange"
+                                                            :current-page.sync="TFollowQuestionQueryBasePageHelperResult.pageNum"
+                                                            :page-size="TFollowQuestionQueryBasePageHelperResult.pageSize"
+                                                            layout="total, prev, pager, next, jumper"
+                                                            :total="TFollowQuestionQueryBasePageHelperResult.total">
+                                                    </el-pagination>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="contents_followes">
+                                <!-- 自定义切换 -->
+                                <div class="aw-mod">
+                                    <div class="mod-body">
+                                        <div class="aw-tab-content">
+                                            <div class="aw-mod aw-user-center-follow-mod">
+                                                <div class="mod-body">
+                                                    <ul id="contents_user_follows" class="clearfix">
+                                                        <template
+                                                                v-if="TFollowPersonQueryBasePageHelperResultFollowed.total != null"
+                                                                v-for="(value,index) in TFollowPersonQueryBasePageHelperResultFollowed.list">
+
+                                                            <li>
+                                                                <div class="mod-head">
+                                                                    <a class="aw-user-img pull-left aw-border-radius-5"
+                                                                       data-id="49009"
+                                                                       href="">
+                                                                        <img :src="path(value.logo)"
+                                                                             :alt="value.userNameFollow">
+                                                                    </a>
+                                                                    <p>
+                                                                        <a href="javaScript:;"
+                                                                           @click="routerToPerson(value.userNameFollow)"><span>{{value.userNameFollow}}</span></a>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="mod-body">
+                                                                    <p class="text-color-999 aw-hide-txt">
+                                                                        {{value.signature}}</p>
+                                                                </div>
+                                                            </li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="mod-footer">
+                                                <div class="page-control">
+                                                    <div class="mt10">
+                                                        <template
+                                                                v-if="VFollowPersonUserQueryBasePageHelperResult.total != null">
+                                                            <!--/** */:page-size 数一页的数量！！！-->
+                                                            <el-pagination
+                                                                    v-show="VFollowPersonUserQueryBasePageHelperResult.list.length > 0"
+                                                                    background
+                                                                    @current-change="handleCurrentChangeTPersonFollows"
+                                                                    :current-page.sync="VFollowPersonUserQueryBasePageHelperResult.pageNum"
+                                                                    :page-size="VFollowPersonUserQueryBasePageHelperResult.pageSize"
+                                                                    layout="total, prev, pager, next, jumper"
+                                                                    :total="VFollowPersonUserQueryBasePageHelperResult.total">
+                                                            </el-pagination>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end 自定义切换 -->
+                            </div>
+                            <!--被人关注-->
+                            <div class="tab-pane" id="contents_followed">
+                                <!-- 自定义切换 -->
+                                <div class="aw-mod">
+                                    <div class="mod-body">
+                                        <div class="aw-tab-content">
+                                            <div class="aw-mod aw-user-center-follow-mod">
+                                                <div class="mod-body">
+                                                    <ul class="clearfix">
+                                                        <template
+                                                                v-if="VFollowPersonUserQueryBasePageHelperResult.total != null"
+                                                                v-for="(value,index) in VFollowPersonUserQueryBasePageHelperResult.list">
+                                                            <li>
+                                                                <div class="mod-head">
+                                                                    <a class="aw-user-img pull-left aw-border-radius-5"
+                                                                       data-id="49009"
+                                                                       href="">
+                                                                        <img :src="path(value.logo)"
+                                                                             :alt="value.userName">
+                                                                    </a>
+                                                                    <p>
+                                                                        <a href="javaScript:;"
+                                                                           @click="routerToPerson(value.userName)"><span>{{value.userName}}</span></a>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="mod-body">
+                                                                    <p class="text-color-999 aw-hide-txt">
+                                                                        {{value.signature}}</p>
+                                                                </div>
+                                                            </li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="mod-footer">
+                                                <div class="page-control">
+                                                    <div class="mt10">
+                                                        <template
+                                                                v-if="VFollowPersonUserQueryBasePageHelperResult.total != null">
+                                                            <!--/** */:page-size 数一页的数量！！！-->
+                                                            <el-pagination
+                                                                    v-show="VFollowPersonUserQueryBasePageHelperResult.list.length > 0"
+                                                                    background
+                                                                    @current-change="handleCurrentChangeVFollowPersonUser"
+                                                                    :current-page.sync="VFollowPersonUserQueryBasePageHelperResult.pageNum"
+                                                                    :page-size="VFollowPersonUserQueryBasePageHelperResult.pageSize"
+                                                                    layout="total, prev, pager, next, jumper"
+                                                                    :total="VFollowPersonUserQueryBasePageHelperResult.total">
+                                                            </el-pagination>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end 自定义切换 -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 侧边栏 -->
+                <!-- end 侧边栏 -->
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="local/wangEditor.js"></script>
+<script type="text/javascript" charset="utf-8" src="local/wangEditorExt.js"></script>
+<script type="text/javascript" charset="utf-8" src="local/plugin.js"></script>
+<script type="text/javascript" charset="utf-8" src="vueJs/vue.js"></script>
+<link rel="stylesheet" href="css/ElementIndex.css">
+<script src="js/ElementIndex.js"></script>
+<script type="text/javascript" charset="utf-8" src="vueJs/axios.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="vueJs/api.js"></script>
+<div class="aw-footer-wrap">
+    <div class="aw-footer">
+        Copyright © 2020<span class="hidden-xs"> - 短书ShortBook  All Rights Reserved</span>
+    </div>
+</div>
+<script>
+    axios.defaults.withCredentials = true;
+    var topHead = new Vue({
+        el: "#head",
+        data: {
+            userId: null,
+            userName: null,
+            word: '',
+            userNameView: null,
+            TTagResults: [{
+                id: null,
+                tag: null
+            }],
+            TUserResult: {
+                id: null,
+                name: null,
+                password: null,
+                salt: null,
+                phone: null,
+                email: null,
+                status: null,
+                createTime: null,
+                updateTime: null,
+                deleteFlag: null,
+                approveStatus: null,
+                blackListUser: null,
+                logo: null,
+                pvCount: null,
+                signature: null
+            },
+        },
+        computed: {
+            path() {
+                return function (value) {
+
+                    if (value == null) {
+                        return 'local/avatar-mid-img.png';
+                    } else {
+
+                        return BASE_URL + "/" + value;
+                    }
+                }
+            }
+
+        },
+        methods: {
+            routerToLogin() {
+                //跳转携带参数
+                window.open(WEBSTROM_BASE_URL + "/login.html?", '_self');
+            },
+            routerToPublish() {
+                window.open(WEBSTROM_BASE_URL + "/publish.html", '_self');
+            },
+            routerToTag(tag) {
+                //跳转携带参数
+                let queryStr = "";
+                if (tag) {
+                    queryStr = queryStr + "tag=" + tag + "";
+                }
+                window.open(WEBSTROM_BASE_URL + "/index.html?" + queryStr, '_self');
+            },
+            routerToSetting() {
+                //跳转携带参数
+                window.open(WEBSTROM_BASE_URL + "/setting.html?", '_self');
+            },
+            routerToPerson(userNameView) {
+                //跳转携带参数
+                let queryStr = "";
+                queryStr = queryStr + "userNameView=" + userNameView + "";
+                window.open(WEBSTROM_BASE_URL + "/person.html?" + queryStr, '_self');
+            },
+            routerToSearch() {
+                //跳转携带参数
+                let queryStr = "";
+                queryStr = queryStr + "word=" + this.word + "";
+                window.open(WEBSTROM_BASE_URL + "/index.html?" + queryStr, '_self');
+            },
+            loginOut() {
+                let self = this;
+                axios.get(loginOut, {}).then(function (res) {
+                    let response = res.data;
+                    if (response.code == 0) {
+                        if (response.content == true) {
+                            self.$message({
+                                type: 'success',
+                                message: '退出成功',
+                                duration: 1000
+                            });
+                            self.routerToLogin();
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '退出失败',
+                                duration: 1000
+                            });
+                        }
+                    } else {
+                        self.$message({
+                            type: 'error',
+                            message: '退出异常' + response.msg,
+                            duration: 1000
+                        });
+                    }
+                }).catch(
+                    function (response) {
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+
+            }
+        }
+    });
+
+</script>
+<script>
+    axios.defaults.withCredentials = true;
+    var vue = new Vue({
+            el: "#body",
+            data: {
+                userId: null,
+                questionId: null,
+                userName: null,//当前登陆的userName
+                userNameView: null,//用于外人查看的userName
+                editor: null,
+                /** 存储TQuestions多条件查询条件(分页，去除分页的num和size)*/
+                TQuestionsQueryBasePageHelperParam: {
+                    id: null,
+                    userId: null,
+                    title: null,
+                    content: null,
+                    isSave: null,
+                    status: null,
+                    deleteFlag: null,
+                    blackFlag: null,
+                    createTime: null,
+                    updateTime: null,
+                    pageNum: 1,
+                    pageSize: 10
+                },
+                /** 存储TQuestions存储多条件查询结果(分页，去除分页的num和size)*/
+                TQuestionsQueryBasePageHelperResult: {
+                    pageNum: null,
+                    pageSize: null,
+                    size: null,
+                    orderBy: null,
+                    startRow: null,
+                    endRow: null,
+                    total: null,
+                    pages: null,
+                    list: [{
+                        id: null,
+                        userId: null,
+                        title: null,
+                        content: null,
+                        isSave: null,
+                        status: null,
+                        deleteFlag: null,
+                        blackFlag: null,
+                        createTime: null,
+                        updateTime: null
+                    }],
+                    firstPage: null,
+                    prePage: 0,
+                    nextPage: null,
+                    lastPage: null,
+                    isFirstPage: true,
+                    isLastPage: null,
+                    hasPreviousPage: null,
+                    hasNextPage: null,
+                    navigatePages: null,
+                    navigatepageNums: []
+                },
+                /** 存储TQuestions插入结果*/
+                TQuestionsInsertParam: {
+                    id: null,
+                    userId: null,
+                    title: null,
+                    content: null,
+                    isSave: null,
+                    status: null,
+                    deleteFlag: null,
+                    blackFlag: null,
+                    createTime: null,
+                    updateTime: null
+                },
+                /** 存储TQuestions单个结果*/
+                TQuestionsResult: {
+                    id: null,
+                    userId: null,
+                    title: null,
+                    content: null,
+                    isSave: null,
+                    status: null,
+                    deleteFlag: null,
+                    blackFlag: null,
+                    createTime: null,
+                    updateTime: null
+                },
+                /** 存储TAnswer插入结果*/
+                TAnswerInsertParam: {
+                    id: null,
+                    userId: null,
+                    questionId: null,
+                    content: null,
+                    deleteFlag: null,
+                    status: null,
+                    blackFlag: null,
+                    time: null,
+                    answerId: null
+                }
+                ,
+                /** 存储TAnswer多条件查询条件(分页，去除分页的num和size)*/
+                TAnswerQueryBasePageHelperParam: {
+                    id: null,
+                    userName: null,
+                    questionId: null,
+                    content: null,
+                    deleteFlag: null,
+                    status: null,
+                    blackFlag: null,
+                    time: null,
+                    answerId: null,
+                    pageNum: 1,
+                    pageSize: 10
+                }
+                ,
+                /** 存储TAnswer存储多条件查询结果(分页，去除分页的num和size)*/
+                TAnswerQueryBasePageHelperResult: {
+                    pageNum: null,
+                    pageSize: null,
+                    size: null,
+                    orderBy: null,
+                    startRow: null,
+                    endRow: null,
+                    total: null,
+                    pages: null,
+                    list: [{
+                        id: null,
+                        userName: null,
+                        questionId: null,
+                        content: null,
+                        deleteFlag: null,
+                        status: null,
+                        blackFlag: null,
+                        time: null,
+                        answerId: null,
+                        showEdit: null
+                    }],
+                    firstPage: null,
+                    prePage: 0,
+                    nextPage: null,
+                    lastPage: null,
+                    isFirstPage: true,
+                    isLastPage: null,
+                    hasPreviousPage: null,
+                    hasNextPage: null,
+                    navigatePages: null,
+                    navigatepageNums: []
+                }
+                ,
+                TTagQueryBaseParam: {
+                    id: null,
+                    tag: null
+                },
+                TTagResults: [{
+                    id: null,
+                    tag: null
+                }],
+                /** 存储TFollowQuestion多个结果*/
+                TFollowQuestionResults: [{
+                    questionId: null,
+                    userName: null,
+                    cteateTime: null
+                }],
+                /** 存储TFollowQuestion多条件查询条件*/
+                TFollowQuestionQueryBaseParam: {
+                    questionId: null,
+                    userName: null,
+                    cteateTime: null
+                }
+                ,
+                /** 存储TFollowQuestion多条件查询条件(分页，去除分页的num和size)*/
+                TFollowQuestionQueryBasePageHelperParam: {
+                    questionId: null,
+                    userName: null,
+                    cteateTime: null,
+                    pageNum: 1,
+                    pageSize: 10
+                }
+                ,
+                /** 存储TFollowQuestion存储多条件查询结果(分页，去除分页的num和size)*/
+                TFollowQuestionQueryBasePageHelperResult: {
+                    pageNum: null,
+                    pageSize: null,
+                    size: null,
+                    orderBy: null,
+                    startRow: null,
+                    endRow: null,
+                    total: null,
+                    pages: null,
+                    list: [{
+                        questionId: null,
+                        userName: null,
+                        cteateTime: null
+                    }],
+                    firstPage: null,
+                    prePage: 0,
+                    nextPage: null,
+                    lastPage: null,
+                    isFirstPage: true,
+                    isLastPage: null,
+                    hasPreviousPage: null,
+                    hasNextPage: null,
+                    navigatePages: null,
+                    navigatepageNums: []
+                },
+                FollowQuestionList: [{
+                    id: null,
+                    userId: null,
+                    title: null,
+                    content: null,
+                    isSave: null,
+                    status: null,
+                    deleteFlag: null,
+                    blackFlag: null,
+                    createTime: null,
+                    updateTime: null
+                }],
+                /** 存储TFollowPerson多个结果*/
+                TFollowPersonResults: [{
+                    userNameFollow: null,
+                    userName: null,
+                    cteateTime: null
+                }]
+                ,
+                /** 存储TFollowPerson单个结果*/
+                TFollowPersonResult: {
+                    userNameFollow: null,
+                    userName: null,
+                    cteateTime: null
+                }
+                ,
+                /** 存储TFollowPerson插入结果*/
+                TFollowPersonInsertParam: {
+                    userNameFollow: null,
+                    userName: null,
+                    cteateTime: null
+                }
+                , /** 存储TFollowPerson多条件查询条件(分页，去除分页的num和size)*/
+                TFollowPersonQueryBasePageHelperParamFollows: {
+                    userNameFollow: null,
+                    userName: null,
+                    cteateTime: null,
+                    pageNum: 1,
+                    pageSize: 10
+                },
+                /** 存储TFollowPerson多条件查询条件(分页，去除分页的num和size)*/
+                TFollowPersonQueryBasePageHelperParamFollowed: {
+                    userNameFollow: null,
+                    userName: null,
+                    cteateTime: null,
+                    pageNum: 1,
+                    pageSize: 10
+                }
+                ,
+                /** 存储TFollowPerson存储多条件查询结果(分页，去除分页的num和size)*/
+                TFollowPersonQueryBasePageHelperResultFollows: {
+                    pageNum: null,
+                    pageSize: null,
+                    size: null,
+                    orderBy: null,
+                    startRow: null,
+                    endRow: null,
+                    total: null,
+                    pages: null,
+                    list: [{
+                        userNameFollow: null,
+                        userName: null,
+                        cteateTime: null
+                    }],
+                    firstPage: null,
+                    prePage: 0,
+                    nextPage: null,
+                    lastPage: null,
+                    isFirstPage: true,
+                    isLastPage: null,
+                    hasPreviousPage: null,
+                    hasNextPage: null,
+                    navigatePages: null,
+                    navigatepageNums: []
+                },
+                /** 存储TFollowPerson存储多条件查询结果(分页，去除分页的num和size)*/
+                TFollowPersonQueryBasePageHelperResultFollowed: {
+                    pageNum: null,
+                    pageSize: null,
+                    size: null,
+                    orderBy: null,
+                    startRow: null,
+                    endRow: null,
+                    total: null,
+                    pages: null,
+                    list: [{
+                        userNameFollow: null,
+                        userName: null,
+                        cteateTime: null
+                    }],
+                    firstPage: null,
+                    prePage: 0,
+                    nextPage: null,
+                    lastPage: null,
+                    isFirstPage: true,
+                    isLastPage: null,
+                    hasPreviousPage: null,
+                    hasNextPage: null,
+                    navigatePages: null,
+                    navigatepageNums: []
+                },
+                /** 存储TQuestions主键更新*/
+                TQuestionsUpdateByPrimaryKeyParam: {
+                    source: {
+                        userName: null,
+                        title: null,
+                        content: null,
+                        tag: null,
+                        status: null,
+                        isSave: null,
+                        deleteFlag: null,
+                        blackFlag: null,
+                        createTime: null,
+                        updateTime: null,
+                        pvCount: null,
+                        isTop: null
+                    }
+                    ,
+                    target: {
+                        id: null,
+                    }
+                }
+                , /** 存储TReportUser插入结果*/
+                TReportUserInsertParam: {
+                    id: null,
+                    userName: null,
+                    reason: null
+                },
+                TUserResultView: {
+                    id: null,
+                    name: null,
+                    password: null,
+                    salt: null,
+                    phone: null,
+                    email: null,
+                    status: null,
+                    createTime: null,
+                    updateTime: null,
+                    deleteFlag: null,
+                    approveStatus: null,
+                    blackListUser: null,
+                    logo: null,
+                    pvCount: null,
+                    signature: null
+                },
+                /** 存储VFollowPersonUser多条件查询条件(分页，去除分页的num和size)*/
+                VFollowPersonUserQueryBasePageHelperParam: {
+                    userNameFollow: null,
+                    userName: null,
+                    cteateTime: null,
+                    id: null,
+                    name: null,
+                    email: null,
+                    signature: null,
+                    logo: null,
+                    blackListUser: null,
+                    approveStatus: null,
+                    status: null,
+                    phone: null,
+                    pageNum: 1,
+                    pageSize: 10
+                }
+                ,
+                /** 存储VFollowPersonUser存储多条件查询结果(分页，去除分页的num和size)*/
+                VFollowPersonUserQueryBasePageHelperResult: {
+                    pageNum: null,
+                    pageSize: null,
+                    size: null,
+                    orderBy: null,
+                    startRow: null,
+                    endRow: null,
+                    total: null,
+                    pages: null,
+                    list: [{
+                        userNameFollow: null,
+                        userName: null,
+                        cteateTime: null,
+                        id: null,
+                        name: null,
+                        email: null,
+                        signature: null,
+                        logo: null,
+                        blackListUser: null,
+                        approveStatus: null,
+                        status: null,
+                        phone: null
+                    }],
+                    firstPage: null,
+                    prePage: 0,
+                    nextPage: null,
+                    lastPage: null,
+                    isFirstPage: true,
+                    isLastPage: null,
+                    hasPreviousPage: null,
+                    hasNextPage: null,
+                    navigatePages: null,
+                    navigatepageNums: []
+                },
+                /** 存储TAnswer主键更新*/
+                TAnswerUpdateByPrimaryKeyParam: {
+                    source: {
+                        userName: null,
+                        questionId: null,
+                        questionTitle: null,
+                        content: null,
+                        deleteFlag: null,
+                        status: null,
+                        blackFlag: null,
+                        time: null,
+                        answerId: null
+                    }
+                    ,
+                    target: {
+                        id: null,
+                    }
+                },
+            },
+            computed: {
+                base64Decode() {
+                    return function (value) {
+
+                        return base64Decode(value);
+
+                    }
+                },
+                path() {
+                    return function (value) {
+
+                        if (value == null) {
+                            return 'local/avatar-mid-img.png';
+                        } else {
+
+                            return BASE_URL + "/" + value;
+                        }
+                    }
+                }
+            },
+            created() {
+                /**
+                 * 1.接收外界参数
+                 */
+                var userNameView = queryUrlParam('userNameView');
+                this.userNameView = userNameView;
+                this.queryTUserByPrimaryKeyView(userNameView);
+                this.TQuestionsQueryBasePageHelperParam.userName = userNameView;
+                this.queryBasePageHelperTQuestions(this.TQuestionsQueryBasePageHelperParam.pageNum, this.TQuestionsQueryBasePageHelperParam.pageSize);
+                this.TAnswerQueryBasePageHelperParam.userName = userNameView;
+                this.queryBasePageHelperTAnswer(this.TAnswerQueryBasePageHelperParam.pageNum, this.TAnswerQueryBasePageHelperParam.pageSize);
+                this.TFollowQuestionQueryBasePageHelperParam.userName = userNameView;
+                this.queryBasePageHelperTFollowQuestion(this.TFollowQuestionQueryBasePageHelperParam.pageNum, this.TFollowQuestionQueryBasePageHelperParam.pageSize);
+                this.getUserId();
+                this.queryBaseTTag();
+                this.getUserName();
+
+
+            },
+            methods: {
+
+                /** 主键查询TQuestions */
+                queryTQuestionsByPrimaryKey(id) {
+                    let self = this;
+                    axios.get(queryTQuestionsByPrimaryKey, {
+                        params: {
+                            id: id
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            self.TQuestionsResult = data.content;
+                            self.TQuestionsResult.content = base64Decode(data.content.content)
+                            console.log(self.TQuestionsResult);
+                        } else {
+                            alert(data.msg);
+                        }
+                    }).catch(
+                        function (response) {
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                answer() {
+
+                }
+                ,
+                getUserId() {
+                    let self = this;
+                    axios.get(getUserId, {}).then(function (res) {
+                        let response = res.data;
+                        if (response.code == 0) {
+                            self.userId = response.content;
+                            topHead.userId = response.content;
+                            answer.userId = response.content;
+                            // self.$message({
+                            //     type: 'success',
+                            //     message: '查询成功',
+                            //     duration: 1000
+                            // });
+                        } else {
+                            // self.$message({
+                            //     type: 'error',
+                            //     message: '查询异常' + response.msg,
+                            //     duration: 1000
+                            // });
+                            console.info("用户未登录");
+                        }
+                    }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                }
+                ,
+                getUserName() {
+                    let self = this;
+                    axios.get(getUserName, {}).then(function (res) {
+                        let response = res.data;
+                        if (response.code == 0) {
+                            self.userName = response.content;
+                            topHead.userName = response.content;
+                            self.queryTFollowPersonByPrimaryKey(self.userNameView, self.userName)
+                            /**查询被人关注的人*/
+                            self.VFollowPersonUserQueryBasePageHelperParam.userNameFollow = self.userNameView;
+                            self.queryBasePageHelperVFollowPersonUser(self.VFollowPersonUserQueryBasePageHelperParam.pageNum, self.VFollowPersonUserQueryBasePageHelperParam.pageSize)
+                            /**查询关注的人*/
+                            self.TFollowPersonQueryBasePageHelperParamFollowed.userName = self.userNameView;
+                            self.queryBasePageHelperTFollowPersonFollowed(self.TFollowPersonQueryBasePageHelperParamFollowed.pageNum, self.TFollowPersonQueryBasePageHelperParamFollowed.pageSize)
+                            self.queryTUserByPrimaryKey(self.userName);//查询用户详细信息
+
+
+                            // self.$message({
+                            //     type: 'success',
+                            //     message: '查询成功',
+                            //     duration: 1000
+                            // });
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '查询异常' + response.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+
+
+                },
+                insertTAnswer() {
+                    let self = this;
+                    self.TAnswerInsertParam.id = uuid();
+                    self.TAnswerInsertParam.userId = self.userId;
+                    self.TAnswerInsertParam.questionId = self.questionId;
+                    self.TAnswerInsertParam.content = base64Encode(editor.txt.html());
+                    axios.post(insertTAnswer, self.TAnswerInsertParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true) {
+                                    self.$message({
+                                        type: 'success',
+                                        message: '发布成功',
+                                        duration: 1000
+                                    });
+                                }
+                            } else {
+                                self.$message({
+                                    type: 'success',
+                                    message: '发布异常:' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 分页查询TAnswer -- 存放的是默认的data */
+                queryBasePageHelperTAnswer(pageNum, pageSize) {
+                    let self = this;
+                    axios.post(queryBasePageHelperTAnswer + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.TAnswerQueryBasePageHelperParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                self.TAnswerQueryBasePageHelperResult = data.content;
+                                self.TAnswerQueryBasePageHelperResult.list.forEach(value => {
+                                    value.content = base64Decode(value.content);
+                                    value.showEdit = false;
+                                })
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '查询异常' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 多条件查询TTag */
+                queryBaseTTag() {
+                    let self = this;
+                    axios.post(queryBaseTTag, self.TTagQueryBaseParam)
+                        .then(function (res) {
+                            let response = res.data;
+                            if (response.code == 0) {
+                                self.TTagResults = response.content;
+                                topHead.TTagResults = response.content;
+                                // self.$message({
+                                //     type: 'success',
+                                //     message: '查询成功',
+                                //     duration: 1000
+                                // });
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '查询异常' + response.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 分页查询TQuestions -- 存放的是默认的data */
+                queryBasePageHelperTQuestions(pageNum, pageSize) {
+                    let self = this;
+                    axios.post(queryBasePageHelperVQuestionUserAnswerFollow + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.TQuestionsQueryBasePageHelperParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                self.TQuestionsQueryBasePageHelperResult = data.content;
+                                console.log(self.TQuestionsQueryBasePageHelperResult);
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '查询异常' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                handleCurrentChange(currentChange) {
+                    let self = this;
+                    self.TQuestionsQueryBasePageHelperParam.pageNum = self.TQuestionsQueryBasePageHelperResult.pageNum;
+                    self.TQuestionsQueryBasePageHelperParam.pageSize = self.TQuestionsQueryBasePageHelperResult.pageSize;
+                    self.queryBasePageHelperTQuestions(self.TQuestionsQueryBasePageHelperParam.pageNum, self.TQuestionsQueryBasePageHelperParam.pageSize);
+                }
+                ,
+                handleCurrentChangeAnswer(currentChange) {
+                    let self = this;
+                    self.TAnswerQueryBasePageHelperParam.pageNum = self.TAnswerQueryBasePageHelperResult.pageNum;
+                    self.TAnswerQueryBasePageHelperParam.pageSize = self.TAnswerQueryBasePageHelperResult.pageSize;
+                    self.queryBasePageHelperTAnswer(self.TAnswerQueryBasePageHelperParam.pageNum, self.TAnswerQueryBasePageHelperParam.pageSize);
+                },
+                routerToQuestionDetail(id) {
+                    //跳转携带参数
+                    let queryStr = "";
+                    queryStr = queryStr + "id=" + id + "";
+                    window.open(WEBSTROM_BASE_URL + "/questionDetail.html?" + queryStr, '_self');
+                },
+                routerToPublish(questionId) {
+                    //跳转携带参数
+                    let queryStr = "";
+                    queryStr = queryStr + "questionId=" + questionId + "";
+                    window.open(WEBSTROM_BASE_URL + "/publish.html?" + queryStr, '_self');
+                },
+                /** 分页查询TFollowQuestion -- 存放的是默认的data */
+                queryBasePageHelperTFollowQuestion(pageNum, pageSize) {
+                    console.log("queryBasePageHelperTFollowQuestion");
+                    let self = this;
+                    axios.post(queryBasePageHelperTFollowQuestion + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.TFollowQuestionQueryBasePageHelperParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            if (data.code == 0) {
+                                self.TFollowQuestionQueryBasePageHelperResult = data.content;
+                                self.FollowQuestionList = [];
+                                data.content.list.forEach(value => {
+                                    if (value.questionId) {
+                                        self.localQueryTQuestionsByPrimaryKey(value.questionId);
+                                    }
+                                })
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '查询异常' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            //失败回调
+                            console.info("queryBasePageHelperTFollowQuestion 网络异常");
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                handleCurrentChangeTFollowQuestion(currentChange) {
+                    let self = this;
+                    self.TFollowQuestionQueryBasePageHelperParam.pageNum = self.TFollowQuestionQueryBasePageHelperResult.pageNum;
+                    self.TFollowQuestionQueryBasePageHelperParam.pageSize = self.TFollowQuestionQueryBasePageHelperResult.pageSize;
+                    self.queryBasePageHelperTQuestions(self.TFollowQuestionQueryBasePageHelperParam.pageNum, self.TFollowQuestionQueryBasePageHelperParam.pageSize);
+                },
+                /** 主键查询TQuestions */
+                localQueryTQuestionsByPrimaryKey(id) {
+                    console.info("queryTQuestionsByPrimaryKey");
+                    let self = this;
+                    axios.get(queryTQuestionsByPrimaryKey, {
+                        params: {
+                            id: id
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            console.info("queryTQuestionsByPrimaryKey");
+                            data.content.content = base64Decode(data.content.content)
+                            console.info("queryTQuestionsByPrimaryKey2");
+                            self.FollowQuestionList.push(data.content);
+                        } else {
+                            alert(data.msg);
+                        }
+                    }).catch(
+                        function (response) {
+                            console.info("localQueryTQuestionsByPrimaryKey 网络异常" + response);
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 插入TFollowPerson */
+                insertTFollowPerson() {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    axios.post(insertTFollowPerson, self.TFollowPersonInsertParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true)
+                                    self.queryTFollowPersonByPrimaryKey(self.userNameView, self.userName);
+                                self.$message({
+                                    type: 'success',
+                                    message: '关注成功',
+                                    duration: 1000
+                                });
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '关注异常' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            console.error(response);
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+
+
+                /** 主键删除TFollowPerson */
+                deleteTFollowPersonByPrimaryKey(userNameFollow, userName) {
+                    let self = this;
+                    axios.get(deleteTFollowPersonByPrimaryKey, {
+                        params: {
+                            userNameFollow: userNameFollow,
+                            userName: userName
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            if (data.content == true) {
+                                self.queryTFollowPersonByPrimaryKey(self.userNameView, self.userName);
+                                self.$message({
+                                    type: 'success',
+                                    message: '取消关注成功',
+                                    duration: 1000
+                                });
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '取消关注失败',
+                                    duration: 1000
+                                });
+                            }
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '取消关注异常' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            console.error(response);
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+
+
+                /** 分页查询TFollowPerson -- 存放的是默认的data */
+                queryBasePageHelperTFollowPersonFollows(pageNum, pageSize) {
+                    let self = this;
+                    axios.post(queryBasePageHelperTFollowPerson + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.TFollowPersonQueryBasePageHelperParamFollows)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                self.TFollowPersonQueryBasePageHelperResultFollows = data.content;
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '查询异常' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            console.error(response);
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                handleCurrentChangeTPersonFollows(currentChange) {
+                    let self = this;
+                    self.TFollowPersonQueryBasePageHelperParamFollows.pageNum = self.TFollowPersonQueryBasePageHelperResultFollows.pageNum;
+                    self.TFollowPersonQueryBasePageHelperParamFollows.pageSize = self.TFollowPersonQueryBasePageHelperResultFollows.pageSize;
+                    self.queryBasePageHelperTQuestions(self.TFollowPersonQueryBasePageHelperParamFollows.pageNum, self.TFollowPersonQueryBasePageHelperParamFollows.pageSize);
+                },
+                /** 分页查询TFollowPerson -- 存放的是默认的data */
+                queryBasePageHelperTFollowPersonFollowed(pageNum, pageSize) {
+                    let self = this;
+                    axios.post(queryBasePageHelperTFollowPerson + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.TFollowPersonQueryBasePageHelperParamFollowed)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                self.TFollowPersonQueryBasePageHelperResultFollowed = data.content;
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '查询异常' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            console.error(response);
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                handleCurrentChangeTPersonFollowed(currentChange) {
+                    let self = this;
+                    self.TFollowPersonQueryBasePageHelperParamFollowed.pageNum = self.TFollowPersonQueryBasePageHelperResultFollowed.pageNum;
+                    self.TFollowPersonQueryBasePageHelperParamFollowed.pageSize = self.TFollowPersonQueryBasePageHelperResultFollowed.pageSize;
+                    self.queryBasePageHelperTFollowPersonFollowed(self.TFollowPersonQueryBasePageHelperParamFollowed.pageNum, self.TFollowPersonQueryBasePageHelperParamFollowed.pageSize);
+                },
+                /** 主键查询TFollowPerson */
+                queryTFollowPersonByPrimaryKey(userNameFollow, userName) {
+                    let self = this;
+                    axios.get(queryTFollowPersonByPrimaryKey, {
+                        params: {
+                            userNameFollow: userNameFollow,
+                            userName: userName
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+
+                            if (data.content) {
+                                self.TFollowPersonResult = data.content;
+                            } else {
+                                self.TFollowPersonResult.userNameFollow = null;
+                                self.TFollowPersonResult.userName = null;
+                            }
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '查询异常' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            console.error(response);
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 关注 */
+                follow() {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    this.TFollowPersonInsertParam.userNameFollow = this.userNameView;
+                    this.TFollowPersonInsertParam.userName = this.userName;
+                    this.TFollowPersonInsertParam.cteateTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+                    ;
+                    if (this.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    this.insertTFollowPerson();
+                },
+                /** 取消关注 */
+                unFollow() {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    this.TFollowPersonInsertParam.userNameView = this.userNameView;
+                    this.TFollowPersonInsertParam.userName = this.userName;
+                    if (this.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    this.deleteTFollowPersonByPrimaryKey(this.userNameView, this.userName);
+
+                },
+                routerToPerson(userNameView) {
+                    //跳转携带参数
+                    let queryStr = "";
+                    queryStr = queryStr + "userNameView=" + userNameView + "";
+                    window.open(WEBSTROM_BASE_URL + "/person.html?" + queryStr, '_self');
+                },
+                /** 主键更新TQuestions */
+                updateTQuestionsByPrimaryKey(status, questionId) {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    self.TQuestionsUpdateByPrimaryKeyParam.source.status = status;
+                    self.TQuestionsUpdateByPrimaryKeyParam.target.id = questionId;
+                    axios.post(updateTQuestionsByPrimaryKey, self.TQuestionsUpdateByPrimaryKeyParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true) {
+                                    /*刷新数据*/
+                                    self.queryBasePageHelperTQuestions(self.TQuestionsQueryBasePageHelperParam.pageNum, self.TQuestionsQueryBasePageHelperParam.pageSize);
+                                    self.$message({
+                                        type: 'success',
+                                        message: '操作成功',
+                                        duration: 1000
+                                    });
+                                } else {
+                                    self.$message({
+                                        type: 'error',
+                                        message: '操作失败' + response.msg,
+                                        duration: 1000
+                                    });
+                                }
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '操作异常' + response.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            //失败回调
+                            console.error(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 删除回答 */
+                deleteAnswer(answerId, questionId) {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    self.queryTQuestionsByPrimaryKey(answerId, questionId);
+
+
+                },
+                /** 主键删除TAnswer */
+                deleteTAnswerByPrimaryKey(id) {
+                    let self = this;
+                    axios.get(deleteTAnswerByPrimaryKey, {
+                        params: {
+                            id: id
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            if (data.content == true) {
+                                self.$message({
+                                    type: 'success',
+                                    message: '操作成功',
+                                    duration: 1000
+                                });
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '操作失败' + response.msg,
+                                    duration: 1000
+                                });
+                            }
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '操作失败' + response.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            //失败回调
+                            console.error(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 主键查询TQuestions */
+                queryTQuestionsByPrimaryKey(answerId, questionId) {
+                    let self = this;
+                    axios.get(queryTQuestionsByPrimaryKey, {
+                        params: {
+                            id: questionId
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            data.content;
+                            if (data.content.status == 1) {
+                                /*代表终结*/
+                                self.$message({
+                                    type: 'error',
+                                    message: '问题已经终结,无法删除',
+                                    duration: 1000
+                                });
+                            } else if (data.content.status == 0) {
+                                self.deleteTAnswerByPrimaryKey(answerId);
+                                self.queryBasePageHelperTAnswer(self.TAnswerQueryBasePageHelperParam.pageNum, self.TAnswerQueryBasePageHelperParam.pageSize);
+                            }
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '操作失败' + response.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            //失败回调
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                /** 插入TReportAnswer */
+                insertTReportAnswer() {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    self.TReportAnswerInsertParam.id = uuid();
+                    axios.post(insertTReportAnswer, self.TReportAnswerInsertParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true)
+                                    alert("insert 成功");
+                            } else {
+                                alert(data.msg);
+                            }
+                        }).catch(
+                        function (response) {
+                            //失败回调
+                            alert(self.alertError);
+                        })
+                },
+                /** 插入TReportUser */
+                insertTReportUser() {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    self.TReportUserInsertParam.id = uuid();
+                    axios.post(insertTReportUser, self.TReportUserInsertParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true)
+                                    self.$message({
+                                        type: 'success',
+                                        message: '举报成功'
+                                    });
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '举报失败' + data.msg
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            console.info(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常'
+                            });
+                        })
+                },
+                reportUser(userName) {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    self.$prompt('请输入举报理由', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                    }).then(({value}) => {
+                        if (value == null) {
+                            self.$message({
+                                type: 'error',
+                                message: '举报理由不能为空'
+                            });
+                            return;
+                        }
+                        self.TReportUserInsertParam.userName = userName;
+                        self.TReportUserInsertParam.reason = value;
+                        self.insertTReportUser();
+                    }).catch((res) => {
+                        console.info(res);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常'
+                        });
+                    });
+                },
+                /** 主键查询TUser */
+                queryTUserByPrimaryKey(name) {
+                    let self = this;
+                    axios.get(queryTUserByPrimaryKey, {
+                        params: {
+                            name: name
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            topHead.TUserResult = data.content;
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '获取用户信息异常:' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            console.info(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常',
+                                duration: 1000
+                            });
+                        })
+
+                },
+                /** 主键查询TUser */
+                queryTUserByPrimaryKeyView(name) {
+                    let self = this;
+                    axios.get(queryTUserByPrimaryKey, {
+                        params: {
+                            name: name
+                        }
+                    }).then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            self.TUserResultView = data.content;
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '获取用户信息异常:' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            console.info(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常',
+                                duration: 1000
+                            });
+                        })
+
+                },
+                /** 分页查询VFollowPersonUser -- 存放的是默认的data */
+                queryBasePageHelperVFollowPersonUser(pageNum, pageSize) {
+                    let self = this;
+                    axios.post(queryBasePageHelperVFollowPersonUser + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.VFollowPersonUserQueryBasePageHelperParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                self.VFollowPersonUserQueryBasePageHelperResult = data.content;
+                                console.log(self.VFollowPersonUserQueryBasePageHelperResult);
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '获取用户信息异常:' + data.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            console.info(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常',
+                                duration: 1000
+                            });
+                        })
+                },
+                handleCurrentChangeVFollowPersonUser(currentChange) {
+                    let self = this;
+                    self.VFollowPersonUserQueryBasePageHelperParam.pageNum = self.VFollowPersonUserQueryBasePageHelperResult.pageNum;
+                    self.VFollowPersonUserQueryBasePageHelperParam.pageSize = self.VFollowPersonUserQueryBasePageHelperResult.pageSize;
+                    self.queryBasePageHelperTFollowPersonFollowed(self.VFollowPersonUserQueryBasePageHelperParam.pageNum, self.VFollowPersonUserQueryBasePageHelperParam.pageSize);
+                },
+                editAnswer(answerId, content) {
+                    let tmp = [];
+                    let self = this;
+                    self.TAnswerQueryBasePageHelperResult.list.forEach(value => {
+                        value.showEdit = false;
+                        if (value.id == answerId) {
+                            value.showEdit = true;
+                        }
+                        tmp.push(value);
+                    });
+                    self.TAnswerQueryBasePageHelperResult.list = tmp;
+
+                    /**编辑回复*/
+                    var E = window.wangEditor;
+                    var $text1 = $('#' + answerId);
+                    self.editor = new E('#wmd-input' + answerId);
+                    self.editor.customConfig.onchange = function (html) {
+                        $text1.val(html)
+                    };
+                    self.editor.customConfig.onchange = function (html) {
+                        $text1.val(html)
+                    };
+                    self.editor.customConfig.codeType = {
+                        title: "选择代码类型:",
+                        type: [
+                            "C/C++", "Php", "C#", "Java", "Css", "Sql", "Html", "Bash/Shell"
+                        ]
+                    };
+                    self.editor.customConfig.uploadImgServer = uploadFile;
+                    self.editor.customConfig.onchangeTimeout = 200;
+                    self.editor.customConfig.uploadImgTimeout = 30000;
+                    self.editor.customConfig.uploadImgMaxSize = 10 * 1024 * 1024;
+                    self.editor.customConfig.uploadFileName = 'files';
+                    self.editor.customConfig.customUploadImg = function (files, insert) {
+                        var form = new FormData();
+                        files.forEach(file => form.append('files', file, file.name));
+                        axios.post(uploadFile, form)
+                            .then(function (res) {
+                                let response = res.data;
+                                if (response.code == 0) {
+
+                                    response.content.forEach(url => {
+                                        console.info(BASE_URL + url);
+                                        insert(BASE_URL + "/" + url);//插入图片
+                                    })
+                                } else {
+                                    console.info(response.msg)
+                                }
+                            }).catch(
+                            function (response) {
+                                console.info(response)
+                            });
+
+                    }
+
+                    self.editor.create();
+                    self.editor.txt.html($text1.val());
+                    E.attach.init('#wmd-input' + answerId, "question");
+                    E.viewSource.init(self.editor);
+                    self.editor.txt.html(content);
+                },
+
+                cancalEditerAnswer() {
+                    let tmp = [];
+                    let self = this;
+                    self.TAnswerQueryBasePageHelperResult.list.forEach(value => {
+                        value.showEdit = false;
+                        tmp.push(value);
+                    });
+                    self.TAnswerQueryBasePageHelperResult.list = tmp;
+
+                },
+                updateAnswer(answerId) {
+                    let self = this;
+                    if (self.userName == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '用户未登陆',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    if (self.editor.txt.html() == null || self.editor.txt.html() == '<p><br></p>') {
+                        self.$message({
+                            type: 'error',
+                            message: '请输入评论!',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    self.TAnswerUpdateByPrimaryKeyParam.target.id = answerId;
+                    self.TAnswerUpdateByPrimaryKeyParam.source.content = base64Encode(self.editor.txt.html());
+                    self.TAnswerUpdateByPrimaryKeyParam.source.time = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+
+                    /** 主键更新TAnswer */
+                    axios.post(updateTAnswerByPrimaryKey, self.TAnswerUpdateByPrimaryKeyParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true) {
+                                    self.$message({
+                                        type: 'success',
+                                        message: '操作成功',
+                                        duration: 1000
+                                    });
+                                    self.queryBasePageHelperTAnswer(self.TAnswerQueryBasePageHelperParam.pageNum, self.TAnswerQueryBasePageHelperParam.pageSize);
+                                } else {
+                                    self.$message({
+                                        type: 'error',
+                                        message: '操作失败' + response.msg,
+                                        duration: 1000
+                                    });
+                                }
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '操作失败' + response.msg,
+                                    duration: 1000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            //失败回调
+                            console.error(response);
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+            }
+        })
+    ;
+
+    function answer() {
+        vue.insertTAnswer();
+    }
+
+</script>
+
+
+</body>
+</html>

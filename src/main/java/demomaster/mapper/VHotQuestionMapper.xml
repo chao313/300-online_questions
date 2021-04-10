@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.VHotQuestionDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.VHotQuestionVo">
+        <result column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="is_top" property="isTop"/>
+        <result column="pv_count" property="pvCount"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="black_flag" property="blackFlag"/>
+        <result column="delete_flag" property="deleteFlag"/>
+        <result column="status" property="status"/>
+        <result column="is_save" property="isSave"/>
+        <result column="tag" property="tag"/>
+        <result column="follow_sum" property="followSum"/>
+        <result column="answer_sum" property="answerSum"/>
+        <result column="last_answer_time" property="lastAnswerTime"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.VHotQuestionVo">
+        INSERT INTO `v_hot_question`(
+        `id` ,
+        `user_name` ,
+        `title` ,
+        `content` ,
+        `is_top` ,
+        `pv_count` ,
+        `update_time` ,
+        `create_time` ,
+        `black_flag` ,
+        `delete_flag` ,
+        `status` ,
+        `is_save` ,
+        `tag` ,
+        `follow_sum` ,
+        `answer_sum` ,
+        `last_answer_time` 
+        )VALUE(
+          #{id}  ,
+          #{userName}  ,
+          #{title}  ,
+          #{content}  ,
+          #{isTop}  ,
+          #{pvCount}  ,
+          #{updateTime}  ,
+          #{createTime}  ,
+          #{blackFlag}  ,
+          #{deleteFlag}  ,
+          #{status}  ,
+          #{isSave}  ,
+          #{tag}  ,
+          #{followSum}  ,
+          #{answerSum}  ,
+          #{lastAnswerTime}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `v_hot_question`(
+        `id`,
+        `user_name`,
+        `title`,
+        `content`,
+        `is_top`,
+        `pv_count`,
+        `update_time`,
+        `create_time`,
+        `black_flag`,
+        `delete_flag`,
+        `status`,
+        `is_save`,
+        `tag`,
+        `follow_sum`,
+        `answer_sum`,
+        `last_answer_time`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.userName},
+            #{item.title},
+            #{item.content},
+            #{item.isTop},
+            #{item.pvCount},
+            #{item.updateTime},
+            #{item.createTime},
+            #{item.blackFlag},
+            #{item.deleteFlag},
+            #{item.status},
+            #{item.isSave},
+            #{item.tag},
+            #{item.followSum},
+            #{item.answerSum},
+            #{item.lastAnswerTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.VHotQuestionVo"
+            parameterType="demomaster.vo.VHotQuestionVo">
+        SELECT
+        `id`,
+        `user_name`,
+        `title`,
+        `content`,
+        `is_top`,
+        `pv_count`,
+        `update_time`,
+        `create_time`,
+        `black_flag`,
+        `delete_flag`,
+        `status`,
+        `is_save`,
+        `tag`,
+        `follow_sum`,
+        `answer_sum`,
+        `last_answer_time`
+        FROM `v_hot_question`
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="title != null">
+                AND `title` = #{title}
+            </if>
+            <if test="content != null">
+                AND `content` = #{content}
+            </if>
+            <if test="isTop != null">
+                AND `is_top` = #{isTop}
+            </if>
+            <if test="pvCount != null">
+                AND `pv_count` = #{pvCount}
+            </if>
+            <if test="updateTime != null">
+                AND `update_time` = #{updateTime}
+            </if>
+            <if test="createTime != null">
+                AND `create_time` = #{createTime}
+            </if>
+            <if test="blackFlag != null">
+                AND `black_flag` = #{blackFlag}
+            </if>
+            <if test="deleteFlag != null">
+                AND `delete_flag` = #{deleteFlag}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="isSave != null">
+                AND `is_save` = #{isSave}
+            </if>
+            <if test="tag != null">
+                AND `tag` = #{tag}
+            </if>
+            <if test="followSum != null">
+                AND `follow_sum` = #{followSum}
+            </if>
+            <if test="answerSum != null">
+                AND `answer_sum` = #{answerSum}
+            </if>
+            <if test="lastAnswerTime != null">
+                AND `last_answer_time` = #{lastAnswerTime}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.VHotQuestionVo">
+        UPDATE `v_hot_question`
+        <set>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.userName != null">
+                `user_name` = #{source.userName},
+            </if>
+            <if test="source.title != null">
+                `title` = #{source.title},
+            </if>
+            <if test="source.content != null">
+                `content` = #{source.content},
+            </if>
+            <if test="source.isTop != null">
+                `is_top` = #{source.isTop},
+            </if>
+            <if test="source.pvCount != null">
+                `pv_count` = #{source.pvCount},
+            </if>
+            <if test="source.updateTime != null">
+                `update_time` = #{source.updateTime},
+            </if>
+            <if test="source.createTime != null">
+                `create_time` = #{source.createTime},
+            </if>
+            <if test="source.blackFlag != null">
+                `black_flag` = #{source.blackFlag},
+            </if>
+            <if test="source.deleteFlag != null">
+                `delete_flag` = #{source.deleteFlag},
+            </if>
+            <if test="source.status != null">
+                `status` = #{source.status},
+            </if>
+            <if test="source.isSave != null">
+                `is_save` = #{source.isSave},
+            </if>
+            <if test="source.tag != null">
+                `tag` = #{source.tag},
+            </if>
+            <if test="source.followSum != null">
+                `follow_sum` = #{source.followSum},
+            </if>
+            <if test="source.answerSum != null">
+                `answer_sum` = #{source.answerSum},
+            </if>
+            <if test="source.lastAnswerTime != null">
+                `last_answer_time` = #{source.lastAnswerTime}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.title != null">
+                AND `title` = #{target.title}
+            </if>
+            <if test="target.content != null">
+                AND `content` = #{target.content}
+            </if>
+            <if test="target.isTop != null">
+                AND `is_top` = #{target.isTop}
+            </if>
+            <if test="target.pvCount != null">
+                AND `pv_count` = #{target.pvCount}
+            </if>
+            <if test="target.updateTime != null">
+                AND `update_time` = #{target.updateTime}
+            </if>
+            <if test="target.createTime != null">
+                AND `create_time` = #{target.createTime}
+            </if>
+            <if test="target.blackFlag != null">
+                AND `black_flag` = #{target.blackFlag}
+            </if>
+            <if test="target.deleteFlag != null">
+                AND `delete_flag` = #{target.deleteFlag}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.isSave != null">
+                AND `is_save` = #{target.isSave}
+            </if>
+            <if test="target.tag != null">
+                AND `tag` = #{target.tag}
+            </if>
+            <if test="target.followSum != null">
+                AND `follow_sum` = #{target.followSum}
+            </if>
+            <if test="target.answerSum != null">
+                AND `answer_sum` = #{target.answerSum}
+            </if>
+            <if test="target.lastAnswerTime != null">
+                AND `last_answer_time` = #{target.lastAnswerTime}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.VHotQuestionVo">
+        UPDATE `v_hot_question`
+        <set>
+            `id` = #{source.id},
+            `user_name` = #{source.userName},
+            `title` = #{source.title},
+            `content` = #{source.content},
+            `is_top` = #{source.isTop},
+            `pv_count` = #{source.pvCount},
+            `update_time` = #{source.updateTime},
+            `create_time` = #{source.createTime},
+            `black_flag` = #{source.blackFlag},
+            `delete_flag` = #{source.deleteFlag},
+            `status` = #{source.status},
+            `is_save` = #{source.isSave},
+            `tag` = #{source.tag},
+            `follow_sum` = #{source.followSum},
+            `answer_sum` = #{source.answerSum},
+            `last_answer_time` = #{source.lastAnswerTime}
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.title != null">
+                AND `title` = #{target.title}
+            </if>
+            <if test="target.content != null">
+                AND `content` = #{target.content}
+            </if>
+            <if test="target.isTop != null">
+                AND `is_top` = #{target.isTop}
+            </if>
+            <if test="target.pvCount != null">
+                AND `pv_count` = #{target.pvCount}
+            </if>
+            <if test="target.updateTime != null">
+                AND `update_time` = #{target.updateTime}
+            </if>
+            <if test="target.createTime != null">
+                AND `create_time` = #{target.createTime}
+            </if>
+            <if test="target.blackFlag != null">
+                AND `black_flag` = #{target.blackFlag}
+            </if>
+            <if test="target.deleteFlag != null">
+                AND `delete_flag` = #{target.deleteFlag}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.isSave != null">
+                AND `is_save` = #{target.isSave}
+            </if>
+            <if test="target.tag != null">
+                AND `tag` = #{target.tag}
+            </if>
+            <if test="target.followSum != null">
+                AND `follow_sum` = #{target.followSum}
+            </if>
+            <if test="target.answerSum != null">
+                AND `answer_sum` = #{target.answerSum}
+            </if>
+            <if test="target.lastAnswerTime != null">
+                AND `last_answer_time` = #{target.lastAnswerTime}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.VHotQuestionVo">
+        DELETE FROM `v_hot_question`
+        <where>
+            1 =1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="title != null">
+                AND `title` = #{title}
+            </if>
+            <if test="content != null">
+                AND `content` = #{content}
+            </if>
+            <if test="isTop != null">
+                AND `is_top` = #{isTop}
+            </if>
+            <if test="pvCount != null">
+                AND `pv_count` = #{pvCount}
+            </if>
+            <if test="updateTime != null">
+                AND `update_time` = #{updateTime}
+            </if>
+            <if test="createTime != null">
+                AND `create_time` = #{createTime}
+            </if>
+            <if test="blackFlag != null">
+                AND `black_flag` = #{blackFlag}
+            </if>
+            <if test="deleteFlag != null">
+                AND `delete_flag` = #{deleteFlag}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="isSave != null">
+                AND `is_save` = #{isSave}
+            </if>
+            <if test="tag != null">
+                AND `tag` = #{tag}
+            </if>
+            <if test="followSum != null">
+                AND `follow_sum` = #{followSum}
+            </if>
+            <if test="answerSum != null">
+                AND `answer_sum` = #{answerSum}
+            </if>
+            <if test="lastAnswerTime != null">
+                AND `last_answer_time` = #{lastAnswerTime}
+            </if>
+        </where>
+    </delete>
+
+
+</mapper>

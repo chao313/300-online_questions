@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.TQuestionTagDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.TQuestionTagVo">
+        <result column="id" property="id"/>
+        <result column="question_id" property="questionId"/>
+        <result column="tag_id" property="tagId"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.TQuestionTagVo">
+        INSERT INTO `t_question_tag`(
+        `id` ,
+        `question_id` ,
+        `tag_id` 
+        )VALUE(
+          #{id}  ,
+          #{questionId}  ,
+          #{tagId}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `t_question_tag`(
+        `id`,
+        `question_id`,
+        `tag_id`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.questionId},
+            #{item.tagId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.TQuestionTagVo"
+            parameterType="demomaster.vo.TQuestionTagVo">
+        SELECT
+        `id`,
+        `question_id`,
+        `tag_id`
+        FROM `t_question_tag`
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="tagId != null">
+                AND `tag_id` = #{tagId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.TQuestionTagVo">
+        UPDATE `t_question_tag`
+        <set>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId},
+            </if>
+            <if test="source.tagId != null">
+                `tag_id` = #{source.tagId}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.tagId != null">
+                AND `tag_id` = #{target.tagId}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.TQuestionTagVo">
+        UPDATE `t_question_tag`
+        <set>
+            `id` = #{source.id},
+            `question_id` = #{source.questionId},
+            `tag_id` = #{source.tagId}
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.tagId != null">
+                AND `tag_id` = #{target.tagId}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.TQuestionTagVo">
+        DELETE FROM `t_question_tag`
+        <where>
+            1 =1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="tagId != null">
+                AND `tag_id` = #{tagId}
+            </if>
+        </where>
+    </delete>
+
+
+    <select id="queryByPrimaryKey" resultMap="resultMap"
+            resultType="demomaster.vo.TQuestionTagVo">
+        SELECT
+        `id`,
+        `question_id`,
+        `tag_id`
+        FROM `t_question_tag`
+        <where>
+            1 =1
+            AND `id` = #{id}
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM `t_question_tag`
+        <where>
+            1 = 1
+               AND `id` = #{id}
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey"
+            parameterType="demomaster.vo.TQuestionTagVo">
+        UPDATE `t_question_tag`
+        <set>
+               <if test="source.questionId != null">
+                   `question_id` = #{source.questionId},
+               </if>
+               <if test="source.tagId != null">
+                   `tag_id` = #{source.tagId}
+               </if>
+        </set>
+        <where>
+            1 =1
+               AND `id` = #{target.id}
+        </where>
+    </update>
+
+</mapper>

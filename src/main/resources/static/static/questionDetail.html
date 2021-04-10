@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html class="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="renderer" content="webkit">
+    <title>问题详情</title>
+    <link rel="stylesheet" type="text/css" href="local/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="local/icon.css">
+    <link href="local/common.css" rel="stylesheet" type="text/css">
+    <link href="local/link.css" rel="stylesheet" type="text/css">
+    <link href="local/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="local/tomorrow.css">
+    <script src="local/jquery.2.js" type="text/javascript"></script>
+    <script src="local/jquery.form.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="local/layer.css" id="layuicss-layer">
+    <link rel="stylesheet" href="local/laydate.css" id="layuicss-laydate">
+</head>
+<body>
+<div class="aw-top-menu-wrap" id="top">
+    <div class="container">
+        <!-- end logo -->
+        <!-- 搜索框 -->
+        <div class="aw-search-box  hidden-xs hidden-sm">
+            <form class="navbar-search" action="" id="global_search_form"
+                  method="post">
+                <input type="text" name="question_content"
+                       placeholder="搜索问题..."
+                       class="form-control"
+                       v-model="word"
+                >
+                <span title="搜索" id="global_search_btns" @click="routerToSearch()">搜索</span>
+            </form>
+        </div>
+        <!-- end 搜索框 -->
+        <!-- 导航 -->
+        <div class="aw-top-nav navbar">
+            <div class="navbar-header">
+                <button class="navbar-toggle pull-left">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <nav role="navigation" class="collapse navbar-collapse bs-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="javaScript:;" @click="routerToTag()">首页</a></li>
+                    <template v-for="(value,index) in TTagResults">
+                        <template v-if="index <= 4 ">
+                            <li>
+                                <a href="javaScript:;" @click="routerToTag(value.tag)"><span>{{value.tag}}</span></a>
+                            </li>
+                        </template>
+                    </template>
+                    <template v-if="TTagResults.length > 4 ">
+                        <li>
+                            <a style="font-weight:bold;">更多</a>
+                            <div class="dropdown-list pull-right">
+                                <ul id="extensions-nav-list">
+                                    <template v-for="(value,index) in TTagResults">
+                                        <template v-if="index > 4 ">
+                                            <li>
+                                                <a href="javaScript:;" @click="routerToTag(value.tag)"><span>{{value.tag}}</span></a>
+                                            </li>
+                                        </template>
+                                    </template>
+                                </ul>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </nav>
+        </div>
+        <template v-if="userName == null">
+            <div class="aw-user-nav">
+                <!-- 登陆&注册栏 -->
+                <a class="login btn btn-normal btn-primary" @click="routerToLogin">登录</a>
+                <a class="register btn btn-normal btn-success" @click="routerToLogin">注册</a>
+                <!-- end 登陆&注册栏 -->
+            </div>
+        </template>
+        <template v-else>
+            <!-- 用户栏 -->
+            <div class="aw-user-nav">
+                <!-- 登陆&注册栏 -->
+                <a href="" class="aw-user-nav-dropdown">
+                    <img :alt="userName" :src="path(TUserResult.logo)">{{userName}}
+                </a>
+                <div class="aw-dropdown dropdown-list pull-right">
+                    <ul class="aw-dropdown-list">
+                        <li><a href="javaScript:;" @click="routerToPerson(userName)">
+                            个人主页<span
+                                class="badge badge-important collapse" id="inbox_unread"
+                                style="display: none;">0</span></a>
+                        </li>
+                        <li><a href="javaScript:;" @click="routerToSetting()">设置</a></li>
+                        <li><a href="javaScript:;" @click="loginOut()">退出</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- end 用户栏 -->
+            <!-- 提问 -->
+            <div class="aw-publish-btn">
+                <a id="header_publish" class="btn-primary" href="javaScript:;"
+                   @click="routerToPublish()">提问</a>
+            </div>
+            <!-- end 提问 -->
+        </template>
+        <!-- end 提问 -->
+    </div>
+</div>
+<div class="aw-container-wrap" id="body">
+    <div class="container">
+        <div class="row">
+            <div class="aw-content-wrap clearfix">
+                <div class="col-sm-12 col-md-9 aw-main-content">
+                    <!-- 话题推荐bar -->
+                    <!-- 话题推荐bar -->
+                    <!-- 话题bar -->
+                    <div class="aw-mod aw-topic-bar" id="question_topic_editor" data-type="question" data-id="32886">
+                        <div class="tag-bar clearfix">
+														<span class="topic-tag" data-id="3868">
+								<a href="" class="text"><span>{{TQuestionsResult.tag}}</span></a>
+							</span>
+                        </div>
+                    </div>
+                    <!-- end 话题bar -->
+                    <div class="aw-mod aw-question-detail aw-item">
+                        <div class="mod-head">
+                            <h1>{{TQuestionsResult.title}}</h1>
+
+                            <input type="hidden" id="share_content" value="">
+                            <input type="hidden" id="share_url" value="">
+                            <input type="hidden" id="share_title" value="">
+                            <div class="operate clearfix">
+                                <template v-if="TFollowQuestionResult.userName == null">
+                                    <a href="javascript:;" @click="follow()"
+                                       class="follow btn btn-normal btn-success pull-left "><span>关注</span></a>
+                                </template>
+                                <template v-else>
+                                    <a href="javascript:;" @click="unFollow()"
+                                       class="follow btn btn-normal btn-success active"><span>取消关注</span></a>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="mod-body">
+                            <div class="content markitup-box" v-html="TQuestionsResult.content">
+                            </div>
+                        </div>
+
+                        <div class="mod-footer">
+                            <div class="meta">
+                                <span class="text-color-999">创建于{{TQuestionsResult.createTime}}</span>
+                                <div class="pull-right more-operate">
+                                    <a class="text-color-999 dropdown-toggle" data-toggle="dropdown"
+                                       id="question_share">
+                                        <a href="javascript:;" class="text-color-999"
+                                           @click="report(TQuestionsResult.id,TQuestionsResult.title)"><i
+                                                class="icon icon-report"></i>举报</a>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 站内邀请 -->
+                        <div class="aw-invite-box collapse" style="display: none;">
+                            <div class="mod-head clearfix">
+                                <div class="search-box pull-left">
+                                    <input id="invite-input" class="form-control" type="text" placeholder="搜索你想邀请的人...">
+                                    <div class="aw-dropdown">
+                                        <p class="title">没有找到相关结果</p>
+                                        <ul class="aw-dropdown-list"></ul>
+                                    </div>
+                                    <i class="icon icon-search"></i>
+                                </div>
+                                <div class="invite-list pull-left collapse">
+                                    已邀请:
+                                </div>
+                            </div>
+                            <div class="mod-body clearfix">
+                                <ul>
+                                    <li style="display: list-item;">
+                                        <a class="aw-user-img pull-left" data-id="52528"
+                                           href=""><img class="img" alt=""
+                                                        src="local/28_avatar_mid.jpg"></a>
+                                        <div class="main">
+                                            <a class="pull-right btn btn-mini btn-success" data-value="LongDragon"
+                                               data-id="52528"
+                                               onclick="AWS.User.invite_user($(this),$(this).parents(&#39;li&#39;).find(&#39;img&#39;).attr(&#39;src&#39;));">邀请</a>
+                                            <a class="aw-user-name" data-id="52528"
+                                               href="">LongDragon</a>
+                                            <p>
+                                                在 <span class="topic-tag"><a class="text" data-id="3868"
+                                                                             href="" 计算机</a></span>
+                                                话题下 获得 4 个赞同 </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mod-footer" style="display: none;">
+                                <a class="next pull-right">&gt;</a> <a class="prev active pull-right">&lt;</a>
+                            </div>
+                        </div>
+                        <!-- end 站内邀请 -->
+                        <!-- 相关链接 -->
+                        <div class="aw-question-related-box collapse" style="display: none;">
+                            <form action="" method="post"
+                                  onsubmit="return false" id="related_link_form">
+                                <div class="mod-head">
+                                    <h2>与内容相关的链接</h2>
+                                </div>
+                                <div class="mod-body clearfix">
+                                    <input type="hidden" name="item_id" value="32886">
+                                    <input type="text" class="form-control pull-left " name="link" value="">
+
+                                    <a onclick="AWS.ajax_post($(&#39;#related_link_form&#39;,function(){ window.location.reload();}));"
+                                       class="pull-left btn btn-success">提交</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="aw-mod aw-question-comment">
+                        <div class="mod-head">
+                            <ul class="nav nav-tabs aw-nav-tabs active">
+                                <h2 class="hidden-xs">{{TAnswerQueryBasePageHelperResult.total}} 个回答</h2>
+                            </ul>
+                        </div>
+
+
+                        <div class="mod-body aw-feed-list">
+
+                            <template v-for="(value,index) in TAnswerQueryBasePageHelperResult.list">
+                                <div class="aw-item" uninterested_count="0" force_fold="0" id="answer_list_50838">
+                                    <div class="mod-head">
+                                        <a class="anchor" name="answer_50838"></a>
+                                        <!-- 用户头像 -->
+                                        <a class="aw-user-img aw-border-radius-5"
+                                           href="" data-id="52528"><img
+                                                :src="path(value.master.logo)" :alt="value.master.userName"></a>
+                                        <!-- end 用户头像 -->
+                                        <div class="title">
+                                            <p>
+                                                <a class="aw-user-name" href=""
+                                                   @click="routerToPerson(value.master.userName)"
+                                                   data-id="52528"><span>{{value.master.userName}}</span></a>
+
+                                        </div>
+                                        <div v-html="base64Decode(value.master.answerContent)">
+
+                                        </div>
+                                        <div class="mod-footer">
+
+                                            <div class="pull-right">
+                                                {{value.master.time}}
+                                                <a class="aw-add-comment active" data-id="50873" data-type="answer"
+                                                   data-comment-count="0" data-first-click="collapse"
+                                                   href="javascript:;" @click="reportAnswer(value.master.id)"></i>举报</a>
+                                                <a class="aw-add-comment active" data-id="50873" data-type="answer"
+                                                   data-comment-count="0" data-first-click="collapse"
+                                                   href="javascript:;"
+                                                   @click="answerToAnswer(value.master.id)"></i>回复</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mod-body aw-feed-list">
+                                        <template v-for="(value,index) in value.slaves">
+                                            <div class="aw-item" uninterested_count="0" force_fold="0">
+                                                <div class="mod-head">
+                                                    <a class="anchor" name="answer_50838"></a>
+                                                    <!-- 用户头像 -->
+                                                    <a class="aw-user-img aw-border-radius-5"
+                                                       href="" data-id="52528"><img
+                                                            :src="path(value.logo)" :alt="value.userName"></a>
+                                                    <!-- end 用户头像 -->
+                                                    <div class="title">
+                                                        <p>
+                                                            <a class="aw-user-name" href=""
+                                                               @click="routerToPerson(value.userName)"
+                                                               data-id="52528"><span>{{value.userName}}</span></a>
+
+                                                    </div>
+                                                    <div v-html="base64Decode(value.answerContent)">
+
+                                                    </div>
+                                                    <div class="mod-footer">
+
+                                                        <div class="pull-right">
+                                                            {{value.time}}
+                                                            <a class="aw-add-comment active" data-id="50873"
+                                                               data-type="answer"
+                                                               data-comment-count="0" data-first-click="collapse"
+                                                               href="javascript:;"
+                                                               @click="reportAnswer(value.id)"></i>举报</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                        </div>
+                    </div>
+                    <!-- end 问题详细模块 -->
+
+
+                    <!-- end 回复编辑器 -->
+                </div>
+                <!-- 侧边栏 -->
+                <div class="col-md-3 aw-side-bar hidden-xs hidden-sm">
+                    <!-- 提问人 -->
+                    <div class="aw-mod">
+                        <div class="mod-head">
+                            <h3>提问人</h3>
+                        </div>
+                        <div class="mod-body">
+                            <dl>
+                                <dt class="pull-left aw-border-radius-5">
+                                    <a href="javascript:;" @click="routerToPerson(TUserResultQuestion.name)"><img
+                                            :alt="TUserResultQuestion.name"
+                                            :src="path(TUserResultQuestion.logo)"></a>
+                                </dt>
+                                <dd class="pull-left">
+                                    <a class="aw-user-name" href="javascript:;"
+                                       @click="routerToPerson(TUserResultQuestion.name)"
+                                       data-id="45510"><span>{{TUserResultQuestion.name}}</span></a>
+                                    <p>{{TUserResultQuestion.signature}}</p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <!-- end 提问人 -->
+
+                    <!-- 问题状态 -->
+                    <div class="aw-mod question-status">
+                        <div class="mod-head">
+                            <h3>问题状态</h3>
+                        </div>
+                        <div class="mod-body">
+                            <ul>
+                                <li>创建时间: <span class="aw-text-color-blue">{{TQuestionsResult.createTime}}</span></li>
+                                <li>类别: <span class="aw-text-color-blue">{{TQuestionsResult.tag}}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- end 问题状态 -->
+                </div>
+                <!-- end 侧边栏 -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="aw-content-wrap clearfix">
+            <div class="col-sm-12 col-md-9 aw-main-content">
+                <!-- 回复编辑器 -->
+                <div class="aw-mod aw-replay-box question">
+                    <a name="answer_form"></a>
+                    <form action="" onsubmit="return false;"
+                          method="post" id="answer_form" class="question_answer_form">
+                        <input type="hidden" name="post_hash" value="558d7fa668f8075e3462f6112d02c1f3">
+                        <input type="hidden" name="question_id" value="32886">
+                        <input type="hidden" name="attach_access_key" value="b2f0a5665b8022ea67b32095afbbc39b">
+                        <div class="mod-head" id="answer">
+                            <a href="" class="aw-user-name"><img :alt="userName"
+                                                                 :src="path(TUserResult.logo)"></a>
+                            <p>{{userName}}</p>
+                        </div>
+                        <div class="mod-body">
+                            <div class="aw-mod aw-editor-box">
+                                <div class="mod-head">
+                                    <div class="wmd-panel">
+                                            <textarea style="display: none;" id="wangcontent" rows="15"
+                                                      name="answer_content"></textarea>
+                                        <div id="wmd-input">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mod-body clearfix">
+                                        <span class="pull-right text-color-999"
+                                              id="answer_content_message">&nbsp;</span>
+                                </div>
+                                <div class="mod-body clearfix">
+                                    <a href="javascript:;"
+                                       onclick="answer()"
+                                       class="btn btn-normal btn-success pull-right btn-reply"
+                                       id="publish_submit">回答</a>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="local/wangEditor.js"></script>
+<script type="text/javascript" charset="utf-8" src="local/wangEditorExt.js"></script>
+<script type="text/javascript" src="local/plugin.js"></script>
+<script type="text/javascript" charset="utf-8" src="vueJs/vue.js"></script>
+<link rel="stylesheet" href="css/ElementIndex.css">
+<script src="js/ElementIndex.js"></script>
+<script type="text/javascript" charset="utf-8" src="vueJs/axios.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="vueJs/api.js"></script>
+<div class="aw-footer-wrap">
+    <div class="aw-footer">
+        Copyright © 2020<span class="hidden-xs"> - 短书ShortBook  All Rights Reserved</span>
+    </div>
+</div>
+<script>
+    var topHead = new Vue({
+        el: "#top",
+        data: {
+            userId: null,
+            userName: null,
+            TTagResults: [{
+                id: null,
+                tag: null
+            }],
+            word: '',
+            TUserResult: {
+                id: null,
+                name: null,
+                password: null,
+                salt: null,
+                phone: null,
+                email: null,
+                status: null,
+                createTime: null,
+                updateTime: null,
+                deleteFlag: null,
+                approveStatus: null,
+                blackListUser: null,
+                logo: null,
+                pvCount: null,
+                signature: null
+            },
+        },
+        computed: {
+            path() {
+                return function (value) {
+
+                    if (value == null) {
+                        return 'local/avatar-mid-img.png';
+                    } else {
+
+                        return BASE_URL + "/" + value;
+                    }
+                }
+            }
+        },
+
+        methods: {
+            routerToLogin() {
+                //跳转携带参数
+                window.open(WEBSTROM_BASE_URL + "/login.html?", '_self');
+            },
+            routerToPublish() {
+                window.open(WEBSTROM_BASE_URL + "/publish.html", '_self');
+            },
+            routerToTag(tag) {
+                //跳转携带参数
+                let queryStr = "";
+                if (tag) {
+                    queryStr = queryStr + "tag=" + tag + "";
+                }
+                window.open(WEBSTROM_BASE_URL + "/index.html?" + queryStr, '_self');
+            },
+            routerToSearch() {
+                //跳转携带参数
+                let queryStr = "";
+                queryStr = queryStr + "word=" + this.word + "";
+                window.open(WEBSTROM_BASE_URL + "/index.html?" + queryStr, '_self');
+            },
+            routerToSetting() {
+                //跳转携带参数
+                window.open(WEBSTROM_BASE_URL + "/setting.html?", '_self');
+            },
+            routerToPerson(userNameView) {
+                //跳转携带参数
+                let queryStr = "";
+                queryStr = queryStr + "userNameView=" + userNameView + "";
+                window.open(WEBSTROM_BASE_URL + "/person.html?" + queryStr, '_self');
+            },
+            loginOut() {
+                let self = this;
+                axios.get(loginOut, {}).then(function (res) {
+                    let response = res.data;
+                    if (response.code == 0) {
+                        if (response.content == true) {
+                            self.$message({
+                                type: 'success',
+                                message: '退出成功',
+                                duration: 1000
+                            });
+                            self.routerToLogin();
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '退出失败',
+                                duration: 1000
+                            });
+                        }
+                    } else {
+                        self.$message({
+                            type: 'error',
+                            message: '退出异常' + response.msg,
+                            duration: 1000
+                        });
+                    }
+                }).catch(
+                    function (response) {
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+        }
+    });
+</script>
+<script>
+    var answerVue = new Vue({
+        el: "#answer",
+        data: {
+            userId: null,
+            userName: null,
+            TTagResults: [{
+                id: null,
+                tag: null
+            }],
+            TUserResult: {
+                id: null,
+                name: null,
+                password: null,
+                salt: null,
+                phone: null,
+                email: null,
+                status: null,
+                createTime: null,
+                updateTime: null,
+                deleteFlag: null,
+                approveStatus: null,
+                blackListUser: null,
+                logo: null,
+                pvCount: null,
+                signature: null
+            },
+        },
+        computed: {
+            path() {
+                return function (value) {
+
+                    if (value == null) {
+                        return 'local/avatar-mid-img.png';
+                    } else {
+
+                        return BASE_URL + "/" + value;
+                    }
+                }
+            }
+        },
+        methods: {}
+    });
+</script>
+<script>
+    axios.defaults.withCredentials = true;
+    var vue = new Vue({
+        el: "#body",
+        data: {
+            userId: '',
+            questionId: '',
+            userName: null,
+            /** 存储TQuestions插入结果*/
+            TQuestionsInsertParam: {
+                id: null,
+                userId: null,
+                title: null,
+                content: null,
+                status: null,
+                deleteFlag: null,
+                blackFlag: null,
+                createTime: null,
+                updateTime: null
+            },
+            /** 存储TQuestions单个结果*/
+            TQuestionsResult: {
+                id: null,
+                userId: null,
+                title: null,
+                content: null,
+                status: null,
+                deleteFlag: null,
+                blackFlag: null,
+                createTime: null,
+                updateTime: null
+            },
+            /** 存储TAnswer插入结果*/
+            TAnswerInsertParam: {
+                id: null,
+                userName: null,
+                questionId: null,
+                questionTitle: null,
+                content: null,
+                deleteFlag: null,
+                status: null,
+                blackFlag: null,
+                time: null,
+                answerId: null
+            }
+            ,
+            /** 存储TAnswer多条件查询条件(分页，去除分页的num和size)*/
+            TAnswerQueryBasePageHelperParam: {
+                id: null,
+                userId: null,
+                questionId: null,
+                content: null,
+                deleteFlag: null,
+                status: null,
+                blackFlag: null,
+                time: null,
+                answerId: null,
+                pageNum: 1,
+                pageSize: 10
+            }
+            ,
+            /** 存储TAnswer存储多条件查询结果(分页，去除分页的num和size)*/
+            TAnswerQueryBasePageHelperResult: {
+                pageNum: null,
+                pageSize: null,
+                size: null,
+                orderBy: null,
+                startRow: null,
+                endRow: null,
+                total: null,
+                pages: null,
+                list: [{
+                    id: null,
+                    userId: null,
+                    questionId: null,
+                    content: null,
+                    deleteFlag: null,
+                    status: null,
+                    blackFlag: null,
+                    time: null,
+                    answerId: null
+                }],
+                firstPage: null,
+                prePage: 0,
+                nextPage: null,
+                lastPage: null,
+                isFirstPage: true,
+                isLastPage: null,
+                hasPreviousPage: null,
+                hasNextPage: null,
+                navigatePages: null,
+                navigatepageNums: []
+            }
+            ,
+            TTagQueryBaseParam: {
+                id: null,
+                tag: null
+            },
+            TTagResults: [{
+                id: null,
+                tag: null
+            }],
+            /** 存储TFollowQuestion单个结果*/
+            TFollowQuestionResult: {
+                questionId: null,
+                userName: null,
+                cteateTime: null
+            }
+            ,
+            /** 存储TFollowQuestion插入结果*/
+            TFollowQuestionInsertParam: {
+                questionId: null,
+                userName: null,
+                cteateTime: null
+            },
+            /** 存储TReportQuestion插入结果*/
+            TReportQuestionInsertParam: {
+                id: null,
+                questionId: null,
+                questionName: null,
+                reason: null
+            },
+            /** 存储TReportAnswer插入结果*/
+            TReportAnswerInsertParam: {
+                id: null,
+                answerId: null,
+                reason: null
+            },
+            /** 存储TAnswerSecond插入结果*/
+            TAnswerSecondInsertParam: {
+                id: null,
+                userName: null,
+                questionId: null,
+                questionTitle: null,
+                content: null,
+                deleteFlag: null,
+                status: null,
+                blackFlag: null,
+                time: null,
+                answerId: null
+            },
+            TUserResult: {
+                id: null,
+                name: null,
+                password: null,
+                salt: null,
+                phone: null,
+                email: null,
+                status: null,
+                createTime: null,
+                updateTime: null,
+                deleteFlag: null,
+                approveStatus: null,
+                blackListUser: null,
+                logo: null,
+                pvCount: null,
+                signature: null
+            },
+            TUserResultQuestion: {
+                id: null,
+                name: null,
+                password: null,
+                salt: null,
+                phone: null,
+                email: null,
+                status: null,
+                createTime: null,
+                updateTime: null,
+                deleteFlag: null,
+                approveStatus: null,
+                blackListUser: null,
+                logo: null,
+                pvCount: null,
+                signature: null
+            },
+        },
+        computed: {
+            base64Decode() {
+                return function (value) {
+
+                    return base64Decode(value);
+
+                }
+            },
+            path() {
+                return function (value) {
+
+                    if (value == null) {
+                        return 'local/avatar-mid-img.png';
+                    } else {
+
+                        return BASE_URL + "/" + value;
+                    }
+                }
+            }
+        }
+        ,
+        created() {
+            /**
+             * 1.接收外界参数
+             */
+            var questionId = queryUrlParam('id')
+            this.questionId = questionId;
+            this.queryTQuestionsByPrimaryKey(questionId)
+            this.TAnswerQueryBasePageHelperParam.questionId = questionId;
+            this.getUserId();
+            this.getUserName();
+            this.queryBasePageHelperTAnswer();
+            this.queryBaseTTag();
+        }
+        ,
+        methods: {
+
+            /** 主键查询TQuestions */
+            queryTQuestionsByPrimaryKey(id) {
+                let self = this;
+                axios.get(queryTQuestionsByPrimaryKey, {
+                    params: {
+                        id: id
+                    }
+                }).then(function (response) {
+                    let data = response.data;
+                    console.log(data);
+                    if (data.code == 0) {
+                        self.TQuestionsResult = data.content;
+                        self.TQuestionsResult.content = base64Decode(data.content.content)
+                        self.queryTUserByPrimaryKeyQuestion(self.TQuestionsResult.userName)
+
+                    } else {
+                        alert(data.msg);
+                    }
+                }).catch(
+                    function (response) {
+                        console.info(response);
+                        //失败回调
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+            ,
+            getUserId() {
+                let self = this;
+                axios.get(getUserId, {}).then(function (res) {
+                    let response = res.data;
+                    if (response.code == 0) {
+                        self.userId = response.content;
+                        topHead.userId = response.content;
+                        answerVue.userId = response.content;
+                        // self.$message({
+                        //     type: 'success',
+                        //     message: '查询成功',
+                        //     duration: 1000
+                        // });
+                    } else {
+                        // self.$message({
+                        //     type: 'error',
+                        //     message: '查询异常' + response.msg,
+                        //     duration: 1000
+                        // });
+                        console.info("用户未登录");
+                    }
+                }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+
+
+            }
+            ,
+            getUserName() {
+                let self = this;
+                axios.get(getUserName, {}).then(function (res) {
+                    let response = res.data;
+                    if (response.code == 0) {
+                        self.userName = response.content;
+                        topHead.userName = response.content;
+                        answerVue.userName = response.content;
+                        self.queryTFollowQuestionByPrimaryKey(self.questionId, self.userName);
+                        self.queryTUserByPrimaryKey(self.userName);//查询用户详细信息
+                        // self.$message({
+                        //     type: 'success',
+                        //     message: '查询成功',
+                        //     duration: 1000
+                        // });
+                    } else {
+                        // self.$message({
+                        //     type: 'error',
+                        //     message: '查询异常' + response.msg,
+                        //     duration: 1000
+                        // });
+                        console.info("用户未登录");
+                    }
+                }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+
+
+            }
+            ,
+            insertTAnswer() {
+                let self = this;
+                if (self.TQuestionsResult.status == 1) {
+                    self.$message({
+                        type: 'error',
+                        message: '问题已经终结!无法回复!',
+                        duration: 2000
+                    });
+                    return;
+                }
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                if (editor.txt.html() == null || editor.txt.html() == '<p><br></p>') {
+                    self.$message({
+                        type: 'error',
+                        message: '请输入评论!',
+                        duration: 1000
+                    });
+                    return;
+                }
+                self.TAnswerInsertParam.id = uuid();
+                self.TAnswerInsertParam.userName = self.userName;
+                self.TAnswerInsertParam.questionId = self.questionId;
+                self.TAnswerInsertParam.blackFlag = 0;
+                self.TAnswerInsertParam.questionTitle = self.TQuestionsResult.title;
+                self.TAnswerInsertParam.content = base64Encode(editor.txt.html());
+                self.TAnswerInsertParam.time = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+                axios.post(insertTAnswer, self.TAnswerInsertParam)
+                    .then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            if (data.content == true) {
+                                self.queryBasePageHelperTAnswer();
+                                // editor.txt.html('');
+                                self.$message({
+                                    type: 'success',
+                                    message: '发布成功',
+                                    duration: 1000
+                                });
+                                editor.txt.clear()
+                            }
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '发布异常:' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+            ,
+            /** 分页查询TAnswer -- 存放的是默认的data */
+            queryBasePageHelperTAnswer() {
+                let self = this;
+                let pageNum = self.TAnswerQueryBasePageHelperParam.pageNum;
+                let pageSize = self.TAnswerQueryBasePageHelperParam.pageSize;
+                self.TAnswerQueryBasePageHelperParam.blackFlag = 0;
+                axios.post(queryBasePageSecondHelper + "?pageNum=" + pageNum + "&pageSize=" + pageSize, self.TAnswerQueryBasePageHelperParam)
+                    .then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            self.TAnswerQueryBasePageHelperResult = data.content;
+                            self.TAnswerQueryBasePageHelperResult.list.forEach(value => {
+                                console.info(value);
+                                // value.content = base64Decode(value.content);
+                            })
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '查询异常' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        console.info(response);
+                        //失败回调
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+            ,
+            /** 多条件查询TTag */
+            queryBaseTTag() {
+                let self = this;
+                axios.post(queryBaseTTag, self.TTagQueryBaseParam)
+                    .then(function (res) {
+                        let response = res.data;
+                        if (response.code == 0) {
+                            self.TTagResults = response.content;
+                            topHead.TTagResults = response.content;
+                            // self.$message({
+                            //     type: 'success',
+                            //     message: '查询成功',
+                            //     duration: 1000
+                            // });
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '查询异常' + response.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+            ,
+            /** 主键查询TFollowQuestion */
+            queryTFollowQuestionByPrimaryKey(questionId, userName) {
+                let self = this;
+                axios.get(queryTFollowQuestionByPrimaryKey, {
+                    params: {
+                        questionId: questionId,
+                        userName: userName
+                    }
+                }).then(function (response) {
+                    let data = response.data;
+                    console.log(data);
+                    if (data.code == 0) {
+                        if (data.content) {
+                            self.TFollowQuestionResult = data.content;
+                        } else {
+                            self.TFollowQuestionResult.userName = null;
+                            self.TFollowQuestionResult.questionId = null;
+                        }
+                        console.log(self.TFollowQuestionResult);
+                    } else {
+                        alert(data.msg);
+                    }
+                }).catch(
+                    function (response) {
+                        //失败回调
+                        alert(self.alertError);
+                    })
+            }
+            ,
+            /** 主键删除TFollowQuestion */
+            deleteTFollowQuestionByPrimaryKey(questionId, userName) {
+                let self = this;
+                axios.get(deleteTFollowQuestionByPrimaryKey, {
+                    params: {
+                        questionId: questionId,
+                        userName: userName
+                    }
+                }).then(function (response) {
+                    let data = response.data;
+                    console.log(data);
+                    if (data.code == 0) {
+                        console.info("questionId" + questionId)
+                        console.info("userName" + userName)
+                        if (data.content == true) {
+                            self.queryTFollowQuestionByPrimaryKey(questionId, userName);
+                            self.$message({
+                                type: 'success',
+                                message: '取消关注成功',
+                                duration: 1000
+                            });
+                        }
+                    } else {
+                        self.$message({
+                            type: 'error',
+                            message: '取消关注成功' + data.msg,
+                            duration: 1000
+                        });
+                    }
+                }).catch(
+                    function (response) {
+                        //失败回调
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+            ,
+            /** 插入TFollowQuestion */
+            insertTFollowQuestion() {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                axios.post(insertTFollowQuestion, self.TFollowQuestionInsertParam)
+                    .then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            self.queryTFollowQuestionByPrimaryKey(self.TFollowQuestionInsertParam.questionId, self.TFollowQuestionInsertParam.userName);
+                            if (data.content == true)
+                                self.$message({
+                                    type: 'success',
+                                    message: '关注成功',
+                                    duration: 1000
+                                });
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '关注异常' + data.msg,
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        //失败回调
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常，请检查服务',
+                            duration: 1000
+                        })
+                    })
+            }
+            ,
+
+            /** 关注 */
+            follow() {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                this.TFollowQuestionInsertParam.questionId = this.questionId;
+                this.TFollowQuestionInsertParam.userName = this.userName;
+                this.TFollowQuestionInsertParam.cteateTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+                ;
+                if (this.userName == null) {
+                    this.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                this.insertTFollowQuestion();
+                this.queryTFollowQuestionByPrimaryKey(this.questionId, this.userName);
+            }
+            ,
+            /** 取消关注 */
+            unFollow() {
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                this.TFollowQuestionInsertParam.questionId = this.questionId;
+                this.TFollowQuestionInsertParam.userName = this.userName;
+                if (this.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                this.deleteTFollowQuestionByPrimaryKey(this.questionId, this.userName);
+
+            }
+            ,
+            routerToPerson(userNameView) {
+                //跳转携带参数
+                let queryStr = "";
+                queryStr = queryStr + "userNameView=" + userNameView + "";
+                window.open(WEBSTROM_BASE_URL + "/person.html?" + queryStr, '_self');
+            }
+            ,
+
+            /** 插入TReportQuestion */
+            insertTReportQuestion() {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                self.TReportQuestionInsertParam.id = uuid();
+                axios.post(insertTReportQuestion, self.TReportQuestionInsertParam)
+                    .then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            if (data.content == true)
+                                self.$message({
+                                    type: 'success',
+                                    message: '举报成功',
+                                    duration: 1000
+                                });
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '举报失败',
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常'
+                        });
+                    })
+            }
+            ,
+            report(questionId, title) {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                self.$prompt('请输入举报理由', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({value}) => {
+                    if (value == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '举报理由不能为空'
+                        });
+                        return;
+                    }
+                    self.TReportQuestionInsertParam.questionId = questionId;
+                    self.TReportQuestionInsertParam.questionName = title;
+                    self.TReportQuestionInsertParam.reason = value;
+                    self.insertTReportQuestion();
+                }).catch((res) => {
+                    console.info(res);
+                    self.$message({
+                        type: 'error',
+                        message: '网络异常'
+                    });
+                });
+            }
+            ,
+            /** 插入TReportAnswer */
+            insertTReportAnswer() {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                self.TReportAnswerInsertParam.id = uuid();
+                axios.post(insertTReportAnswer, self.TReportAnswerInsertParam)
+                    .then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            if (data.content == true)
+                                self.$message({
+                                    type: 'success',
+                                    message: '举报成功',
+                                    duration: 1000
+                                });
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '举报失败',
+                                duration: 1000
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常'
+                        });
+                    })
+            }
+            ,
+            reportAnswer(answerId) {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                self.$prompt('请输入举报理由', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({value}) => {
+                    if (value == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '举报理由不能为空'
+                        });
+                        return;
+                    }
+                    self.TReportAnswerInsertParam.answerId = answerId;
+                    self.TReportAnswerInsertParam.reason = value;
+                    self.insertTReportAnswer();
+                }).catch((res) => {
+                    console.info(res);
+                    self.$message({
+                        type: 'error',
+                        message: '网络异常'
+                    });
+                });
+            }
+            ,
+            answerToAnswer(answerId) {
+
+                let self = this;
+                if (self.TQuestionsResult.status == 1) {
+                    self.$message({
+                        type: 'error',
+                        message: '问题已经终结!无法回复!',
+                        duration: 2000
+                    });
+                    return;
+                }
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                self.$prompt('请输入回复内容', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({value}) => {
+                    if (value == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '回复内容不能为空'
+                        });
+                        return;
+                    }
+                    self.TAnswerSecondInsertParam.id = uuid();
+                    self.TAnswerSecondInsertParam.userName = self.userName;
+                    self.TAnswerSecondInsertParam.questionId = self.questionId;
+                    self.TAnswerSecondInsertParam.content = base64Encode(value);
+                    self.TAnswerSecondInsertParam.answerId = answerId;
+                    self.TAnswerSecondInsertParam.blackFlag = 0;
+                    self.TAnswerSecondInsertParam.time = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+                    self.insertTAnswerSecond();
+                }).catch((res) => {
+                    console.info(res);
+                    self.$message({
+                        type: 'error',
+                        message: '网络异常'
+                    });
+                });
+            }
+            ,
+            /** 插入TAnswerSecond */
+            insertTAnswerSecond() {
+                let self = this;
+                if (self.userName == null) {
+                    self.$message({
+                        type: 'error',
+                        message: '用户未登陆',
+                        duration: 1000
+                    });
+                    return;
+                }
+                axios.post(insertTAnswerSecond, self.TAnswerSecondInsertParam)
+                    .then(function (response) {
+                        let data = response.data;
+                        console.log(data);
+                        if (data.code == 0) {
+                            if (data.content == true) {
+                                self.$message({
+                                    type: 'success',
+                                    message: '回复成功'
+                                });
+                                self.queryBasePageHelperTAnswer();
+                            }
+                        } else {
+                            self.$message({
+                                type: 'success',
+                                message: '回复异常' + data.msg
+                            });
+                        }
+                    }).catch(
+                    function (response) {
+                        //失败回调
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常'
+                        });
+                    })
+            }
+            ,
+            /** 主键查询TUser */
+            queryTUserByPrimaryKey(name) {
+                let self = this;
+                axios.get(queryTUserByPrimaryKey, {
+                    params: {
+                        name: name
+                    }
+                }).then(function (response) {
+                    let data = response.data;
+                    console.log(data);
+                    if (data.code == 0) {
+                        console.info(data.content)
+                        topHead.TUserResult = data.content;
+                        answerVue.TUserResult = data.content;
+                        self.TUserResult = data.content;
+                    } else {
+                        self.$message({
+                            type: 'error',
+                            message: '获取用户信息异常:' + data.msg,
+                            duration: 1000
+                        });
+                    }
+                }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常',
+                            duration: 1000
+                        });
+                    })
+
+            },
+            /** 主键查询TUser */
+            queryTUserByPrimaryKeyQuestion(name) {
+                let self = this;
+                axios.get(queryTUserByPrimaryKey, {
+                    params: {
+                        name: name
+                    }
+                }).then(function (response) {
+                    let data = response.data;
+                    console.log(data);
+                    if (data.code == 0) {
+                        self.TUserResultQuestion = data.content;
+                        topHead.TUserResultQuestion = data.content;
+                        answerVue.TUserResultQuestion = data.content;
+                    } else {
+                        self.$message({
+                            type: 'error',
+                            message: '获取用户信息异常:' + data.msg,
+                            duration: 1000
+                        });
+                    }
+                }).catch(
+                    function (response) {
+                        console.info(response);
+                        self.$message({
+                            type: 'error',
+                            message: '网络异常',
+                            duration: 1000
+                        });
+                    })
+
+            }
+        }
+    });
+
+    function answer() {
+        vue.insertTAnswer();
+    }
+
+</script>
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var $text1 = $('#wangcontent');
+    var editor = new E('#wmd-input');
+    editor.customConfig.onchange = function (html) {
+        $text1.val(html)
+    };
+    editor.customConfig.onchange = function (html) {
+        $text1.val(html)
+    };
+    editor.customConfig.codeType = {
+        title: "选择代码类型:",
+        type: [
+            "C/C++", "Php", "C#", "Java", "Css", "Sql", "Html", "Bash/Shell"
+        ]
+    };
+    editor.customConfig.uploadImgServer = uploadFile;
+    editor.customConfig.onchangeTimeout = 200;
+    editor.customConfig.uploadImgTimeout = 30000;
+    editor.customConfig.uploadImgMaxSize = 10 * 1024 * 1024;
+    editor.customConfig.uploadFileName = 'files';
+    editor.customConfig.customUploadImg = function (files, insert) {
+        var form = new FormData();
+        files.forEach(file => form.append('files', file, file.name));
+        axios.post(uploadFile, form)
+            .then(function (res) {
+                let response = res.data;
+                if (response.code == 0) {
+
+                    response.content.forEach(url => {
+                        console.info(BASE_URL + url);
+                        insert(BASE_URL + "/" + url);//插入图片
+                    })
+                } else {
+                    console.info(response.msg)
+                }
+            }).catch(
+            function (response) {
+                console.info(response)
+            });
+
+    }
+
+    editor.create();
+    editor.txt.html($text1.val());
+    E.attach.init('#wmd-input', "question");
+    E.viewSource.init(editor);
+</script>
+</div>
+</body>
+
+</html>

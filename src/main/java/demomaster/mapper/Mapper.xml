@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.DAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.Vo">
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.Vo">
+        INSERT INTO ``(
+        )VALUE(
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO ``(
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.Vo"
+            parameterType="demomaster.vo.Vo">
+        SELECT
+        FROM ``
+        <where>
+            1 = 1
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.Vo">
+        UPDATE ``
+        <set>
+        </set>
+        <where>
+            1 =1
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.Vo">
+        UPDATE ``
+        <set>
+        </set>
+        <where>
+            1 =1
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.Vo">
+        DELETE FROM ``
+        <where>
+            1 =1
+        </where>
+    </delete>
+
+
+</mapper>

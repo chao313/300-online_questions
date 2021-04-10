@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.TFollowPersonDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.TFollowPersonVo">
+        <result column="user_name_follow" property="userNameFollow"/>
+        <result column="user_name" property="userName"/>
+        <result column="cteate_time" property="cteateTime"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.TFollowPersonVo">
+        INSERT INTO `t_follow_person`(
+        `user_name_follow` ,
+        `user_name` ,
+        `cteate_time` 
+        )VALUE(
+          #{userNameFollow}  ,
+          #{userName}  ,
+          #{cteateTime}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `t_follow_person`(
+        `user_name_follow`,
+        `user_name`,
+        `cteate_time`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.userNameFollow},
+            #{item.userName},
+            #{item.cteateTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.TFollowPersonVo"
+            parameterType="demomaster.vo.TFollowPersonVo">
+        SELECT
+        `user_name_follow`,
+        `user_name`,
+        `cteate_time`
+        FROM `t_follow_person`
+        <where>
+            1 = 1
+            <if test="userNameFollow != null">
+                AND `user_name_follow` = #{userNameFollow}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="cteateTime != null">
+                AND `cteate_time` = #{cteateTime}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.TFollowPersonVo">
+        UPDATE `t_follow_person`
+        <set>
+            <if test="source.userNameFollow != null">
+                `user_name_follow` = #{source.userNameFollow},
+            </if>
+            <if test="source.userName != null">
+                `user_name` = #{source.userName},
+            </if>
+            <if test="source.cteateTime != null">
+                `cteate_time` = #{source.cteateTime}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.userNameFollow != null">
+                AND `user_name_follow` = #{target.userNameFollow}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.cteateTime != null">
+                AND `cteate_time` = #{target.cteateTime}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.TFollowPersonVo">
+        UPDATE `t_follow_person`
+        <set>
+            `user_name_follow` = #{source.userNameFollow},
+            `user_name` = #{source.userName},
+            `cteate_time` = #{source.cteateTime}
+        </set>
+        <where>
+            1 =1
+            <if test="target.userNameFollow != null">
+                AND `user_name_follow` = #{target.userNameFollow}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.cteateTime != null">
+                AND `cteate_time` = #{target.cteateTime}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.TFollowPersonVo">
+        DELETE FROM `t_follow_person`
+        <where>
+            1 =1
+            <if test="userNameFollow != null">
+                AND `user_name_follow` = #{userNameFollow}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="cteateTime != null">
+                AND `cteate_time` = #{cteateTime}
+            </if>
+        </where>
+    </delete>
+
+
+    <select id="queryByPrimaryKey" resultMap="resultMap"
+            resultType="demomaster.vo.TFollowPersonVo">
+        SELECT
+        `user_name_follow`,
+        `user_name`,
+        `cteate_time`
+        FROM `t_follow_person`
+        <where>
+            1 =1
+            AND `user_name_follow` = #{userNameFollow}
+            AND `user_name` = #{userName}
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM `t_follow_person`
+        <where>
+            1 = 1
+               AND `user_name_follow` = #{userNameFollow}
+               AND `user_name` = #{userName}
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey"
+            parameterType="demomaster.vo.TFollowPersonVo">
+        UPDATE `t_follow_person`
+        <set>
+               <if test="source.cteateTime != null">
+                   `cteate_time` = #{source.cteateTime}
+               </if>
+        </set>
+        <where>
+            1 =1
+               AND `user_name_follow` = #{target.userNameFollow}
+               AND `user_name` = #{target.userName}
+        </where>
+    </update>
+
+</mapper>

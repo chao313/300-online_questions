@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.VFollowPersonUserDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.VFollowPersonUserVo">
+        <result column="user_name_follow" property="userNameFollow"/>
+        <result column="user_name" property="userName"/>
+        <result column="cteate_time" property="cteateTime"/>
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="email" property="email"/>
+        <result column="signature" property="signature"/>
+        <result column="logo" property="logo"/>
+        <result column="black_list_user" property="blackListUser"/>
+        <result column="approve_status" property="approveStatus"/>
+        <result column="status" property="status"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.VFollowPersonUserVo">
+        INSERT INTO `v_follow_person_user`(
+        `user_name_follow` ,
+        `user_name` ,
+        `cteate_time` ,
+        `id` ,
+        `name` ,
+        `email` ,
+        `signature` ,
+        `logo` ,
+        `black_list_user` ,
+        `approve_status` ,
+        `status` ,
+        `phone` 
+        )VALUE(
+          #{userNameFollow}  ,
+          #{userName}  ,
+          #{cteateTime}  ,
+          #{id}  ,
+          #{name}  ,
+          #{email}  ,
+          #{signature}  ,
+          #{logo}  ,
+          #{blackListUser}  ,
+          #{approveStatus}  ,
+          #{status}  ,
+          #{phone}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `v_follow_person_user`(
+        `user_name_follow`,
+        `user_name`,
+        `cteate_time`,
+        `id`,
+        `name`,
+        `email`,
+        `signature`,
+        `logo`,
+        `black_list_user`,
+        `approve_status`,
+        `status`,
+        `phone`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.userNameFollow},
+            #{item.userName},
+            #{item.cteateTime},
+            #{item.id},
+            #{item.name},
+            #{item.email},
+            #{item.signature},
+            #{item.logo},
+            #{item.blackListUser},
+            #{item.approveStatus},
+            #{item.status},
+            #{item.phone}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.VFollowPersonUserVo"
+            parameterType="demomaster.vo.VFollowPersonUserVo">
+        SELECT
+        `user_name_follow`,
+        `user_name`,
+        `cteate_time`,
+        `id`,
+        `name`,
+        `email`,
+        `signature`,
+        `logo`,
+        `black_list_user`,
+        `approve_status`,
+        `status`,
+        `phone`
+        FROM `v_follow_person_user`
+        <where>
+            1 = 1
+            <if test="userNameFollow != null">
+                AND `user_name_follow` = #{userNameFollow}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="cteateTime != null">
+                AND `cteate_time` = #{cteateTime}
+            </if>
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="name != null">
+                AND `name` = #{name}
+            </if>
+            <if test="email != null">
+                AND `email` = #{email}
+            </if>
+            <if test="signature != null">
+                AND `signature` = #{signature}
+            </if>
+            <if test="logo != null">
+                AND `logo` = #{logo}
+            </if>
+            <if test="blackListUser != null">
+                AND `black_list_user` = #{blackListUser}
+            </if>
+            <if test="approveStatus != null">
+                AND `approve_status` = #{approveStatus}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="phone != null">
+                AND `phone` = #{phone}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.VFollowPersonUserVo">
+        UPDATE `v_follow_person_user`
+        <set>
+            <if test="source.userNameFollow != null">
+                `user_name_follow` = #{source.userNameFollow},
+            </if>
+            <if test="source.userName != null">
+                `user_name` = #{source.userName},
+            </if>
+            <if test="source.cteateTime != null">
+                `cteate_time` = #{source.cteateTime},
+            </if>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.name != null">
+                `name` = #{source.name},
+            </if>
+            <if test="source.email != null">
+                `email` = #{source.email},
+            </if>
+            <if test="source.signature != null">
+                `signature` = #{source.signature},
+            </if>
+            <if test="source.logo != null">
+                `logo` = #{source.logo},
+            </if>
+            <if test="source.blackListUser != null">
+                `black_list_user` = #{source.blackListUser},
+            </if>
+            <if test="source.approveStatus != null">
+                `approve_status` = #{source.approveStatus},
+            </if>
+            <if test="source.status != null">
+                `status` = #{source.status},
+            </if>
+            <if test="source.phone != null">
+                `phone` = #{source.phone}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.userNameFollow != null">
+                AND `user_name_follow` = #{target.userNameFollow}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.cteateTime != null">
+                AND `cteate_time` = #{target.cteateTime}
+            </if>
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.name != null">
+                AND `name` = #{target.name}
+            </if>
+            <if test="target.email != null">
+                AND `email` = #{target.email}
+            </if>
+            <if test="target.signature != null">
+                AND `signature` = #{target.signature}
+            </if>
+            <if test="target.logo != null">
+                AND `logo` = #{target.logo}
+            </if>
+            <if test="target.blackListUser != null">
+                AND `black_list_user` = #{target.blackListUser}
+            </if>
+            <if test="target.approveStatus != null">
+                AND `approve_status` = #{target.approveStatus}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.phone != null">
+                AND `phone` = #{target.phone}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.VFollowPersonUserVo">
+        UPDATE `v_follow_person_user`
+        <set>
+            `user_name_follow` = #{source.userNameFollow},
+            `user_name` = #{source.userName},
+            `cteate_time` = #{source.cteateTime},
+            `id` = #{source.id},
+            `name` = #{source.name},
+            `email` = #{source.email},
+            `signature` = #{source.signature},
+            `logo` = #{source.logo},
+            `black_list_user` = #{source.blackListUser},
+            `approve_status` = #{source.approveStatus},
+            `status` = #{source.status},
+            `phone` = #{source.phone}
+        </set>
+        <where>
+            1 =1
+            <if test="target.userNameFollow != null">
+                AND `user_name_follow` = #{target.userNameFollow}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.cteateTime != null">
+                AND `cteate_time` = #{target.cteateTime}
+            </if>
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.name != null">
+                AND `name` = #{target.name}
+            </if>
+            <if test="target.email != null">
+                AND `email` = #{target.email}
+            </if>
+            <if test="target.signature != null">
+                AND `signature` = #{target.signature}
+            </if>
+            <if test="target.logo != null">
+                AND `logo` = #{target.logo}
+            </if>
+            <if test="target.blackListUser != null">
+                AND `black_list_user` = #{target.blackListUser}
+            </if>
+            <if test="target.approveStatus != null">
+                AND `approve_status` = #{target.approveStatus}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.phone != null">
+                AND `phone` = #{target.phone}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.VFollowPersonUserVo">
+        DELETE FROM `v_follow_person_user`
+        <where>
+            1 =1
+            <if test="userNameFollow != null">
+                AND `user_name_follow` = #{userNameFollow}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="cteateTime != null">
+                AND `cteate_time` = #{cteateTime}
+            </if>
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="name != null">
+                AND `name` = #{name}
+            </if>
+            <if test="email != null">
+                AND `email` = #{email}
+            </if>
+            <if test="signature != null">
+                AND `signature` = #{signature}
+            </if>
+            <if test="logo != null">
+                AND `logo` = #{logo}
+            </if>
+            <if test="blackListUser != null">
+                AND `black_list_user` = #{blackListUser}
+            </if>
+            <if test="approveStatus != null">
+                AND `approve_status` = #{approveStatus}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="phone != null">
+                AND `phone` = #{phone}
+            </if>
+        </where>
+    </delete>
+
+
+</mapper>

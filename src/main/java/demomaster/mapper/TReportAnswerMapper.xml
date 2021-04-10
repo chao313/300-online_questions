@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.TReportAnswerDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.TReportAnswerVo">
+        <result column="id" property="id"/>
+        <result column="answer_id" property="answerId"/>
+        <result column="reason" property="reason"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.TReportAnswerVo">
+        INSERT INTO `t_report_answer`(
+        `id` ,
+        `answer_id` ,
+        `reason` 
+        )VALUE(
+          #{id}  ,
+          #{answerId}  ,
+          #{reason}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `t_report_answer`(
+        `id`,
+        `answer_id`,
+        `reason`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.answerId},
+            #{item.reason}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.TReportAnswerVo"
+            parameterType="demomaster.vo.TReportAnswerVo">
+        SELECT
+        `id`,
+        `answer_id`,
+        `reason`
+        FROM `t_report_answer`
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="answerId != null">
+                AND `answer_id` = #{answerId}
+            </if>
+            <if test="reason != null">
+                AND `reason` = #{reason}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.TReportAnswerVo">
+        UPDATE `t_report_answer`
+        <set>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.answerId != null">
+                `answer_id` = #{source.answerId},
+            </if>
+            <if test="source.reason != null">
+                `reason` = #{source.reason}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.answerId != null">
+                AND `answer_id` = #{target.answerId}
+            </if>
+            <if test="target.reason != null">
+                AND `reason` = #{target.reason}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.TReportAnswerVo">
+        UPDATE `t_report_answer`
+        <set>
+            `id` = #{source.id},
+            `answer_id` = #{source.answerId},
+            `reason` = #{source.reason}
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.answerId != null">
+                AND `answer_id` = #{target.answerId}
+            </if>
+            <if test="target.reason != null">
+                AND `reason` = #{target.reason}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.TReportAnswerVo">
+        DELETE FROM `t_report_answer`
+        <where>
+            1 =1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="answerId != null">
+                AND `answer_id` = #{answerId}
+            </if>
+            <if test="reason != null">
+                AND `reason` = #{reason}
+            </if>
+        </where>
+    </delete>
+
+
+    <select id="queryByPrimaryKey" resultMap="resultMap"
+            resultType="demomaster.vo.TReportAnswerVo">
+        SELECT
+        `id`,
+        `answer_id`,
+        `reason`
+        FROM `t_report_answer`
+        <where>
+            1 =1
+            AND `id` = #{id}
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM `t_report_answer`
+        <where>
+            1 = 1
+               AND `id` = #{id}
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey"
+            parameterType="demomaster.vo.TReportAnswerVo">
+        UPDATE `t_report_answer`
+        <set>
+               <if test="source.answerId != null">
+                   `answer_id` = #{source.answerId},
+               </if>
+               <if test="source.reason != null">
+                   `reason` = #{source.reason}
+               </if>
+        </set>
+        <where>
+            1 =1
+               AND `id` = #{target.id}
+        </where>
+    </update>
+
+</mapper>

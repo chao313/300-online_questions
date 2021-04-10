@@ -1,0 +1,96 @@
+package demomaster.serviceImpl;
+
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import demomaster.vo.VQuestionUserAnswerFollowVo;
+import demomaster.dao.VQuestionUserAnswerFollowDAO;
+import demomaster.service.VQuestionUserAnswerFollowService;
+import demomaster.vo.plugin.VQuestionUserAnswerFollowPriVo;
+import demomaster.vo.plugin.VQuestionUserAnswerFollowNoPriVo;
+
+
+/**
+ * 表名称      :v_question_user_answer_follow
+ * 表类型      :VIEW
+ * 表引擎      :
+ * 表版本      :0
+ * 行格式      :
+ * 表创建      :
+ * 字符集      :
+ * 表注释      :VIEW
+ */
+@Service
+public class VQuestionUserAnswerFollowServiceImpl implements VQuestionUserAnswerFollowService {
+
+    @Autowired
+    private VQuestionUserAnswerFollowDAO dao;
+
+    /**
+     * insert
+     */
+    @Override
+    public boolean insert(VQuestionUserAnswerFollowVo vo) {
+
+        return dao.insert(vo) > 0 ? true : false;
+
+    }
+
+    /**
+     * insert vos 批量插入
+     */
+    @Override
+    public boolean insert(List<VQuestionUserAnswerFollowVo> vos) {
+
+        return dao.inserts(vos) > 0 ? true : false;
+
+    }
+
+    /**
+     * 查询base
+     */
+    @Override
+    public List<VQuestionUserAnswerFollowVo> queryBase(VQuestionUserAnswerFollowVo query) {
+
+        return dao.queryBase(query);
+
+    }
+
+    @Override
+    public List<VQuestionUserAnswerFollowVo> queryByContentLike(VQuestionUserAnswerFollowVo query, List<String> words) {
+        return dao.queryByContentLike(query, words);
+    }
+
+    /**
+     * update base (exclude value is null or "")
+     */
+    @Override
+    public boolean updateBase(VQuestionUserAnswerFollowVo source, VQuestionUserAnswerFollowVo target) {
+
+        return dao.updateBase(source, target) > 0 ? true : false;
+
+    }
+
+    /**
+     * update base (include value is null or "")
+     */
+    @Override
+    public boolean updateBaseIncludeNull(VQuestionUserAnswerFollowVo source, VQuestionUserAnswerFollowVo target) {
+
+        return dao.updateBaseIncludeNull(source, target) > 0 ? true : false;
+
+    }
+
+    /**
+     * 删除base
+     */
+    @Override
+    public boolean deleteBase(VQuestionUserAnswerFollowVo vo) {
+
+        return dao.deleteBase(vo) > 0 ? true : false;
+
+    }
+
+}

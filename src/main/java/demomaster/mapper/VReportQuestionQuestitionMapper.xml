@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.VReportQuestionQuestitionDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.VReportQuestionQuestitionVo">
+        <result column="id" property="id"/>
+        <result column="question_id" property="questionId"/>
+        <result column="question_name" property="questionName"/>
+        <result column="reason" property="reason"/>
+        <result column="id_0" property="id0"/>
+        <result column="user_name" property="userName"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="tag" property="tag"/>
+        <result column="is_save" property="isSave"/>
+        <result column="delete_flag" property="deleteFlag"/>
+        <result column="status" property="status"/>
+        <result column="black_flag" property="blackFlag"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="pv_count" property="pvCount"/>
+        <result column="is_top" property="isTop"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.VReportQuestionQuestitionVo">
+        INSERT INTO `v_report_question_questition`(
+        `id` ,
+        `question_id` ,
+        `question_name` ,
+        `reason` ,
+        `id_0` ,
+        `user_name` ,
+        `title` ,
+        `content` ,
+        `tag` ,
+        `is_save` ,
+        `delete_flag` ,
+        `status` ,
+        `black_flag` ,
+        `create_time` ,
+        `update_time` ,
+        `pv_count` ,
+        `is_top` 
+        )VALUE(
+          #{id}  ,
+          #{questionId}  ,
+          #{questionName}  ,
+          #{reason}  ,
+          #{id0}  ,
+          #{userName}  ,
+          #{title}  ,
+          #{content}  ,
+          #{tag}  ,
+          #{isSave}  ,
+          #{deleteFlag}  ,
+          #{status}  ,
+          #{blackFlag}  ,
+          #{createTime}  ,
+          #{updateTime}  ,
+          #{pvCount}  ,
+          #{isTop}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `v_report_question_questition`(
+        `id`,
+        `question_id`,
+        `question_name`,
+        `reason`,
+        `id_0`,
+        `user_name`,
+        `title`,
+        `content`,
+        `tag`,
+        `is_save`,
+        `delete_flag`,
+        `status`,
+        `black_flag`,
+        `create_time`,
+        `update_time`,
+        `pv_count`,
+        `is_top`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.questionId},
+            #{item.questionName},
+            #{item.reason},
+            #{item.id0},
+            #{item.userName},
+            #{item.title},
+            #{item.content},
+            #{item.tag},
+            #{item.isSave},
+            #{item.deleteFlag},
+            #{item.status},
+            #{item.blackFlag},
+            #{item.createTime},
+            #{item.updateTime},
+            #{item.pvCount},
+            #{item.isTop}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.VReportQuestionQuestitionVo"
+            parameterType="demomaster.vo.VReportQuestionQuestitionVo">
+        SELECT
+        `id`,
+        `question_id`,
+        `question_name`,
+        `reason`,
+        `id_0`,
+        `user_name`,
+        `title`,
+        `content`,
+        `tag`,
+        `is_save`,
+        `delete_flag`,
+        `status`,
+        `black_flag`,
+        `create_time`,
+        `update_time`,
+        `pv_count`,
+        `is_top`
+        FROM `v_report_question_questition`
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="questionName != null">
+                AND `question_name` = #{questionName}
+            </if>
+            <if test="reason != null">
+                AND `reason` = #{reason}
+            </if>
+            <if test="id0 != null">
+                AND `id_0` = #{id0}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="title != null">
+                AND `title` = #{title}
+            </if>
+            <if test="content != null">
+                AND `content` = #{content}
+            </if>
+            <if test="tag != null">
+                AND `tag` = #{tag}
+            </if>
+            <if test="isSave != null">
+                AND `is_save` = #{isSave}
+            </if>
+            <if test="deleteFlag != null">
+                AND `delete_flag` = #{deleteFlag}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="blackFlag != null">
+                AND `black_flag` = #{blackFlag}
+            </if>
+            <if test="createTime != null">
+                AND `create_time` = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                AND `update_time` = #{updateTime}
+            </if>
+            <if test="pvCount != null">
+                AND `pv_count` = #{pvCount}
+            </if>
+            <if test="isTop != null">
+                AND `is_top` = #{isTop}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.VReportQuestionQuestitionVo">
+        UPDATE `v_report_question_questition`
+        <set>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId},
+            </if>
+            <if test="source.questionName != null">
+                `question_name` = #{source.questionName},
+            </if>
+            <if test="source.reason != null">
+                `reason` = #{source.reason},
+            </if>
+            <if test="source.id0 != null">
+                `id_0` = #{source.id0},
+            </if>
+            <if test="source.userName != null">
+                `user_name` = #{source.userName},
+            </if>
+            <if test="source.title != null">
+                `title` = #{source.title},
+            </if>
+            <if test="source.content != null">
+                `content` = #{source.content},
+            </if>
+            <if test="source.tag != null">
+                `tag` = #{source.tag},
+            </if>
+            <if test="source.isSave != null">
+                `is_save` = #{source.isSave},
+            </if>
+            <if test="source.deleteFlag != null">
+                `delete_flag` = #{source.deleteFlag},
+            </if>
+            <if test="source.status != null">
+                `status` = #{source.status},
+            </if>
+            <if test="source.blackFlag != null">
+                `black_flag` = #{source.blackFlag},
+            </if>
+            <if test="source.createTime != null">
+                `create_time` = #{source.createTime},
+            </if>
+            <if test="source.updateTime != null">
+                `update_time` = #{source.updateTime},
+            </if>
+            <if test="source.pvCount != null">
+                `pv_count` = #{source.pvCount},
+            </if>
+            <if test="source.isTop != null">
+                `is_top` = #{source.isTop}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.questionName != null">
+                AND `question_name` = #{target.questionName}
+            </if>
+            <if test="target.reason != null">
+                AND `reason` = #{target.reason}
+            </if>
+            <if test="target.id0 != null">
+                AND `id_0` = #{target.id0}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.title != null">
+                AND `title` = #{target.title}
+            </if>
+            <if test="target.content != null">
+                AND `content` = #{target.content}
+            </if>
+            <if test="target.tag != null">
+                AND `tag` = #{target.tag}
+            </if>
+            <if test="target.isSave != null">
+                AND `is_save` = #{target.isSave}
+            </if>
+            <if test="target.deleteFlag != null">
+                AND `delete_flag` = #{target.deleteFlag}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.blackFlag != null">
+                AND `black_flag` = #{target.blackFlag}
+            </if>
+            <if test="target.createTime != null">
+                AND `create_time` = #{target.createTime}
+            </if>
+            <if test="target.updateTime != null">
+                AND `update_time` = #{target.updateTime}
+            </if>
+            <if test="target.pvCount != null">
+                AND `pv_count` = #{target.pvCount}
+            </if>
+            <if test="target.isTop != null">
+                AND `is_top` = #{target.isTop}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.VReportQuestionQuestitionVo">
+        UPDATE `v_report_question_questition`
+        <set>
+            `id` = #{source.id},
+            `question_id` = #{source.questionId},
+            `question_name` = #{source.questionName},
+            `reason` = #{source.reason},
+            `id_0` = #{source.id0},
+            `user_name` = #{source.userName},
+            `title` = #{source.title},
+            `content` = #{source.content},
+            `tag` = #{source.tag},
+            `is_save` = #{source.isSave},
+            `delete_flag` = #{source.deleteFlag},
+            `status` = #{source.status},
+            `black_flag` = #{source.blackFlag},
+            `create_time` = #{source.createTime},
+            `update_time` = #{source.updateTime},
+            `pv_count` = #{source.pvCount},
+            `is_top` = #{source.isTop}
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.questionName != null">
+                AND `question_name` = #{target.questionName}
+            </if>
+            <if test="target.reason != null">
+                AND `reason` = #{target.reason}
+            </if>
+            <if test="target.id0 != null">
+                AND `id_0` = #{target.id0}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.title != null">
+                AND `title` = #{target.title}
+            </if>
+            <if test="target.content != null">
+                AND `content` = #{target.content}
+            </if>
+            <if test="target.tag != null">
+                AND `tag` = #{target.tag}
+            </if>
+            <if test="target.isSave != null">
+                AND `is_save` = #{target.isSave}
+            </if>
+            <if test="target.deleteFlag != null">
+                AND `delete_flag` = #{target.deleteFlag}
+            </if>
+            <if test="target.status != null">
+                AND `status` = #{target.status}
+            </if>
+            <if test="target.blackFlag != null">
+                AND `black_flag` = #{target.blackFlag}
+            </if>
+            <if test="target.createTime != null">
+                AND `create_time` = #{target.createTime}
+            </if>
+            <if test="target.updateTime != null">
+                AND `update_time` = #{target.updateTime}
+            </if>
+            <if test="target.pvCount != null">
+                AND `pv_count` = #{target.pvCount}
+            </if>
+            <if test="target.isTop != null">
+                AND `is_top` = #{target.isTop}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.VReportQuestionQuestitionVo">
+        DELETE FROM `v_report_question_questition`
+        <where>
+            1 =1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="questionName != null">
+                AND `question_name` = #{questionName}
+            </if>
+            <if test="reason != null">
+                AND `reason` = #{reason}
+            </if>
+            <if test="id0 != null">
+                AND `id_0` = #{id0}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="title != null">
+                AND `title` = #{title}
+            </if>
+            <if test="content != null">
+                AND `content` = #{content}
+            </if>
+            <if test="tag != null">
+                AND `tag` = #{tag}
+            </if>
+            <if test="isSave != null">
+                AND `is_save` = #{isSave}
+            </if>
+            <if test="deleteFlag != null">
+                AND `delete_flag` = #{deleteFlag}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+            <if test="blackFlag != null">
+                AND `black_flag` = #{blackFlag}
+            </if>
+            <if test="createTime != null">
+                AND `create_time` = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                AND `update_time` = #{updateTime}
+            </if>
+            <if test="pvCount != null">
+                AND `pv_count` = #{pvCount}
+            </if>
+            <if test="isTop != null">
+                AND `is_top` = #{isTop}
+            </if>
+        </where>
+    </delete>
+
+
+</mapper>

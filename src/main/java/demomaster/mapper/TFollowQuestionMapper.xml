@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.TFollowQuestionDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.TFollowQuestionVo">
+        <result column="question_id" property="questionId"/>
+        <result column="user_name" property="userName"/>
+        <result column="cteate_time" property="cteateTime"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.TFollowQuestionVo">
+        INSERT INTO `t_follow_question`(
+        `question_id` ,
+        `user_name` ,
+        `cteate_time` 
+        )VALUE(
+          #{questionId}  ,
+          #{userName}  ,
+          #{cteateTime}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `t_follow_question`(
+        `question_id`,
+        `user_name`,
+        `cteate_time`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.questionId},
+            #{item.userName},
+            #{item.cteateTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.TFollowQuestionVo"
+            parameterType="demomaster.vo.TFollowQuestionVo">
+        SELECT
+        `question_id`,
+        `user_name`,
+        `cteate_time`
+        FROM `t_follow_question`
+        <where>
+            1 = 1
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="cteateTime != null">
+                AND `cteate_time` = #{cteateTime}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.TFollowQuestionVo">
+        UPDATE `t_follow_question`
+        <set>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId},
+            </if>
+            <if test="source.userName != null">
+                `user_name` = #{source.userName},
+            </if>
+            <if test="source.cteateTime != null">
+                `cteate_time` = #{source.cteateTime}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.cteateTime != null">
+                AND `cteate_time` = #{target.cteateTime}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.TFollowQuestionVo">
+        UPDATE `t_follow_question`
+        <set>
+            `question_id` = #{source.questionId},
+            `user_name` = #{source.userName},
+            `cteate_time` = #{source.cteateTime}
+        </set>
+        <where>
+            1 =1
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.userName != null">
+                AND `user_name` = #{target.userName}
+            </if>
+            <if test="target.cteateTime != null">
+                AND `cteate_time` = #{target.cteateTime}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.TFollowQuestionVo">
+        DELETE FROM `t_follow_question`
+        <where>
+            1 =1
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="userName != null">
+                AND `user_name` = #{userName}
+            </if>
+            <if test="cteateTime != null">
+                AND `cteate_time` = #{cteateTime}
+            </if>
+        </where>
+    </delete>
+
+
+    <select id="queryByPrimaryKey" resultMap="resultMap"
+            resultType="demomaster.vo.TFollowQuestionVo">
+        SELECT
+        `question_id`,
+        `user_name`,
+        `cteate_time`
+        FROM `t_follow_question`
+        <where>
+            1 =1
+            AND `question_id` = #{questionId}
+            AND `user_name` = #{userName}
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM `t_follow_question`
+        <where>
+            1 = 1
+               AND `question_id` = #{questionId}
+               AND `user_name` = #{userName}
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey"
+            parameterType="demomaster.vo.TFollowQuestionVo">
+        UPDATE `t_follow_question`
+        <set>
+               <if test="source.cteateTime != null">
+                   `cteate_time` = #{source.cteateTime}
+               </if>
+        </set>
+        <where>
+            1 =1
+               AND `question_id` = #{target.questionId}
+               AND `user_name` = #{target.userName}
+        </where>
+    </update>
+
+</mapper>

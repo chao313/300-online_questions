@@ -1,0 +1,471 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/ElementIndex.css">
+    <script src="vueJs/vue.js"></script>
+    <script src="js/ElementIndex.js"></script>
+    <title>登陆</title>
+</head>
+<body>
+<div id="body">
+    <div class="background">
+        <img src="images/7.jpg" width="100%" height="100%">
+    </div>
+    <div class="front">
+        <el-tabs v-model="activeName" stretch>
+            <!--登录页-->
+            <el-tab-pane label="登录" name="first">
+                <div id="login-coontent">
+                    <br>
+                    <el-form ref="form" :model="form" label-width="100px">
+                        <el-input v-model="form.username" style="width:270px;" size="medium"
+                                  placeholder="请输入账号" prefix-icon="el-icon-user-solid"></el-input>
+                        <br><br>
+                        <el-input v-model="form.password" style="width:270px;" size="medium"
+                                  placeholder="请输入密码" show-password prefix-icon="el-icon-s-goods"
+                        ></el-input>
+                        <br><br>
+                        <el-button type="success" size="mini" style="width:270px;" @click="login">立即登录</el-button>
+                        <br><br>
+                        <el-button type="primary" size="mini" style="width:270px;" @click="routerToIndex()">浏览
+                        </el-button>
+                        <br><br>
+                        <span class="pointerClass" @click="routerToForgetPassword">忘记密码?</span>
+                        <br><br>
+                    </el-form>
+                </div>
+            </el-tab-pane>
+            <!--注册页-->
+            <el-tab-pane label="注册" name="second">
+                <div id="register-content">
+                    <el-form ref="form" :model="form" label-width="100px">
+                        <el-input v-model="TUserInsertParam.name" style="width:270px;" size="medium"
+                                  placeholder="请输入账号" prefix-icon="el-icon-user-solid"></el-input>
+                        <br><br>
+                        <el-input v-model="TUserInsertParam.password" style="width:270px;" size="medium"
+                                  placeholder="请输入密码" show-password prefix-icon="el-icon-s-goods"
+                        ></el-input>
+                        <br><br>
+                        <el-input v-model="TUserInsertParam.email" style="width:270px;" size="medium"
+                                  placeholder="请输入邮箱" prefix-icon="el-icon-s-goods"
+                        ></el-input>
+                        <br><br>
+                        <el-input style="width:270px;" v-model="checkCode" size="medium"
+                                  placeholder="请输入邮箱收到的验证码" prefix-icon="el-icon-s-goods"
+                        ></el-input>
+                        <br><br>
+                        <el-button type="primary" @click="getCheckCode($event)" size="mini" style="width:270px;"
+                                   :disabled="flag">
+                            {{showOpCode}}
+                        </el-button>
+                        <br><br>
+                        <el-button type="success" size="mini" style="width:270px;" @click="validCheckCode()">立即注册
+                        </el-button>
+                        <br><br>
+                    </el-form>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+
+    </div>
+    <div id="title">短书ShortBook</div>
+    <div id="slogan">每一次思考，都应被记载。</div>
+</div>
+<script src="vueJs/axios.min.js"></script>
+<!--<script src="vueJs/data.js"></script>-->
+<script src="vueJs/api.js"></script>
+<script>
+    axios.defaults.withCredentials = true;
+    var vue = new Vue({
+            el: "#body",
+            data: {
+                maxTime: 60,
+                showOpCode: '获取验证码',
+                flag: false,//是否禁用点击
+                prefix: '短书ShortBook',//邮箱前缀
+                checkCode: null,
+                activeName: 'first',
+                form: {
+                    username: '',
+                    password: ''
+                },
+                /** 存储TUser插入结果*/
+                TUserInsertParam: {
+                    id: null,
+                    name: null,
+                    password: null,
+                    salt: null,
+                    phone: null,
+                    email: null,
+                    status: null,
+                    createTime: null,
+                    updateTime: null,
+                    deleteFlag: null,
+                    approveStatus: 0,
+                    blackListUser: 0,
+                    logo: null
+                }
+            },
+            methods: {
+                glance() {
+
+                },
+                login() {
+                    let self = this;
+                    axios.get(login, {
+                        params: {
+                            userName: self.form.username,
+                            password: self.form.password
+                        }
+                    }).then(function (res) {
+                        let response = res.data;
+                        if (response.code == 0) {
+                            let content = response.content;
+                            if (content == true) {
+                                // self.$message({
+                                //     type: 'success',
+                                //     message: '登陆成功',
+                                //     duration: 1000
+                                // });
+                                self.routerToIndex();
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '登陆异常:' + response.msg,
+                                    duration: 1000
+                                });
+                            }
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '登陆异常:' + response.msg,
+                                duration: 3000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+
+                },
+                /** 注册 */
+                register() {
+                    let self = this;
+
+
+                    let regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+                    if (!regEmail.test(self.TUserInsertParam.email) || null == self.TUserInsertParam.email) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确的邮箱',
+                            center: true
+                        })
+                        return;
+                    }
+                    let regName = /^(\w){5,25}$/
+                    if (!regName.test(self.TUserInsertParam.name) || null == self.TUserInsertParam.name) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确格式的用户名',
+                            center: true
+                        })
+                        return;
+                    }
+
+                    let passwordName = /^(\w){5,25}$/
+                    if (!passwordName.test(self.TUserInsertParam.password) || null == self.TUserInsertParam.password) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确格式的密码',
+                            center: true
+                        })
+                        return;
+                    }
+
+
+                    if (self.TUserInsertParam.name == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '请输入账号',
+                            duration: 1000
+                        });
+                        return;
+                    }
+
+                    if (self.TUserInsertParam.name == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '请输入密码',
+                            duration: 1000
+                        });
+                        return;
+                    }
+
+
+                    if (self.TUserInsertParam.email == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '请输入邮箱',
+                            duration: 1000
+                        });
+                        return;
+                    }
+
+                    self.TUserInsertParam.id = uuid();
+                    axios.post(insertTUser, self.TUserInsertParam)
+                        .then(function (response) {
+                            let data = response.data;
+                            console.log(data);
+                            if (data.code == 0) {
+                                if (data.content == true) {
+                                    self.$message({
+                                        type: 'success',
+                                        message: '注册成功，请登录',
+                                        duration: 1000
+                                    });
+                                    self.routerToLogin();
+                                }
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '注册异常' + data.msg,
+                                    duration: 2000
+                                });
+                            }
+                        }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+                },
+                routerToIndex() {
+                    //跳转携带参数
+                    window.open(WEBSTROM_BASE_URL + "/index.html?", '_self');
+                }
+                ,
+                routerToLogin() {
+                    //跳转携带参数
+                    window.open(WEBSTROM_BASE_URL + "/login.html?", '_self');
+                }
+                ,
+                routerToForgetPassword() {
+                    //跳转携带参数
+                    window.open(WEBSTROM_BASE_URL + "/forgetPassword.html?", '_self');
+                }
+                ,
+
+                countDown() {
+                    let self = this;
+                    if (self.maxTime == 0) {
+                        self.checkCode = "";
+                        self.showOpCode = '获取验证码';
+                        self.maxTime = 60;
+                        self.flag = false;
+                    } else {
+                        self.flag = true;
+                        self.showOpCode = self.maxTime + "秒后重新获取";
+                        console.info(self.showOpCode);
+                        self.maxTime--;
+                        setTimeout(() => {
+                            self.countDown()//这里必须使用 箭头函数！！！
+                        }, 1000);
+                    }
+                }
+                ,
+                /** 获取验证码 */
+                getCheckCode(event) {
+                    let self = this;
+                    let regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+                    if (!regEmail.test(self.TUserInsertParam.email) || null == self.TUserInsertParam.email) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确的邮箱',
+                            center: true
+                        })
+                        return;
+                    }
+                    if (self.TUserInsertParam.email == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '请输入邮箱',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    axios.get(getCheckCode, {
+                        params: {
+                            email: self.TUserInsertParam.email,
+                            prefix: self.prefix
+                        }
+                    }).then(function (res) {
+                        let response = res.data;
+                        if (response.code == 0) {
+                            self.$message({
+                                type: 'success',
+                                message: '验证码发送成功',
+                                duration: 1000
+                            });
+                            self.countDown();
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '验证码发送异常:' + response.msg,
+                                duration: 3000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+
+                }
+                ,
+
+                /** 获取验证码 */
+                validCheckCode() {
+                    let self = this;
+
+                    let regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+                    if (!regEmail.test(self.TUserInsertParam.email) || null == self.TUserInsertParam.email) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确的邮箱',
+                            center: true
+                        })
+                        return;
+                    }
+                    let regName = /^(\w){5,25}$/
+                    if (!regName.test(self.TUserInsertParam.name) || null == self.TUserInsertParam.name) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确格式的用户名',
+                            center: true
+                        })
+                        return;
+                    }
+
+                    let passwordName = /^(\w){5,25}$/
+                    if (!passwordName.test(self.TUserInsertParam.password) || null == self.TUserInsertParam.password) {
+                        self.$message({
+                            type: 'error',
+                            message: '请填写正确格式的密码',
+                            center: true
+                        })
+                        return;
+                    }
+                    if (self.checkCode == null) {
+                        self.$message({
+                            type: 'error',
+                            message: '请输入验证码',
+                            duration: 1000
+                        });
+                        return;
+                    }
+                    axios.get(validCheckCode, {
+                        params: {
+                            checkCode: self.checkCode,
+                        }
+                    }).then(function (res) {
+                        let response = res.data;
+                        if (response.code == 0) {
+                            if (response.content == true) {
+                                self.register();
+                            } else {
+                                self.$message({
+                                    type: 'error',
+                                    message: '验证码错误:' + response.msg,
+                                    duration: 3000
+                                });
+                            }
+                        } else {
+                            self.$message({
+                                type: 'error',
+                                message: '验证码错误:' + response.msg,
+                                duration: 3000
+                            });
+                        }
+                    }).catch(
+                        function (response) {
+                            self.$message({
+                                type: 'error',
+                                message: '网络异常，请检查服务',
+                                duration: 1000
+                            })
+                        })
+
+                }
+                ,
+            }
+        })
+    ;
+
+
+</script>
+<style>
+    #title {
+        z-index: 1;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 55px;
+        font-style: italic;
+        font-weight: bolder;
+        color: #2C9CAE;
+        text-shadow: white 3px 3px 3px 0;
+        position: absolute;
+        top: 150px;
+        left: 250px;
+    }
+
+    #slogan {
+        z-index: 1;
+        font-family: 楷体;
+        font-size: 50px;
+        font-weight: bolder;
+        color: black;
+        position: absolute;
+        top: 320px;
+        left: 150px;
+    }
+
+    .background {
+        width: 100%;
+        height: 100%; /**宽高100%是为了图片铺满屏幕 */
+        z-index: -1;
+        position: absolute;
+    }
+
+    .front {
+        text-align: center;
+        z-index: 1;
+        width: 300px;
+        /*height: 400px;*/
+        position: absolute;
+        top: 150px;
+        left: 800px;
+        background-color: white;
+        opacity: 0.9;
+        filter: alpha(opacity=100);
+        border-radius: 15px
+    }
+
+    .pointerClass {
+        cursor: pointer
+    }
+</style>
+</body>
+
+</html>
+
+​

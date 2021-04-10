@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.TReportQuestionDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.TReportQuestionVo">
+        <result column="id" property="id"/>
+        <result column="question_id" property="questionId"/>
+        <result column="question_name" property="questionName"/>
+        <result column="reason" property="reason"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.TReportQuestionVo">
+        INSERT INTO `t_report_question`(
+        `id` ,
+        `question_id` ,
+        `question_name` ,
+        `reason` 
+        )VALUE(
+          #{id}  ,
+          #{questionId}  ,
+          #{questionName}  ,
+          #{reason}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `t_report_question`(
+        `id`,
+        `question_id`,
+        `question_name`,
+        `reason`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.questionId},
+            #{item.questionName},
+            #{item.reason}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.TReportQuestionVo"
+            parameterType="demomaster.vo.TReportQuestionVo">
+        SELECT
+        `id`,
+        `question_id`,
+        `question_name`,
+        `reason`
+        FROM `t_report_question`
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="questionName != null">
+                AND `question_name` = #{questionName}
+            </if>
+            <if test="reason != null">
+                AND `reason` = #{reason}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.TReportQuestionVo">
+        UPDATE `t_report_question`
+        <set>
+            <if test="source.id != null">
+                `id` = #{source.id},
+            </if>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId},
+            </if>
+            <if test="source.questionName != null">
+                `question_name` = #{source.questionName},
+            </if>
+            <if test="source.reason != null">
+                `reason` = #{source.reason}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.questionName != null">
+                AND `question_name` = #{target.questionName}
+            </if>
+            <if test="target.reason != null">
+                AND `reason` = #{target.reason}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.TReportQuestionVo">
+        UPDATE `t_report_question`
+        <set>
+            `id` = #{source.id},
+            `question_id` = #{source.questionId},
+            `question_name` = #{source.questionName},
+            `reason` = #{source.reason}
+        </set>
+        <where>
+            1 =1
+            <if test="target.id != null">
+                AND `id` = #{target.id}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+            <if test="target.questionName != null">
+                AND `question_name` = #{target.questionName}
+            </if>
+            <if test="target.reason != null">
+                AND `reason` = #{target.reason}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.TReportQuestionVo">
+        DELETE FROM `t_report_question`
+        <where>
+            1 =1
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+            <if test="questionName != null">
+                AND `question_name` = #{questionName}
+            </if>
+            <if test="reason != null">
+                AND `reason` = #{reason}
+            </if>
+        </where>
+    </delete>
+
+
+    <select id="queryByPrimaryKey" resultMap="resultMap"
+            resultType="demomaster.vo.TReportQuestionVo">
+        SELECT
+        `id`,
+        `question_id`,
+        `question_name`,
+        `reason`
+        FROM `t_report_question`
+        <where>
+            1 =1
+            AND `id` = #{id}
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM `t_report_question`
+        <where>
+            1 = 1
+               AND `id` = #{id}
+        </where>
+    </delete>
+
+    <update id="updateByPrimaryKey"
+            parameterType="demomaster.vo.TReportQuestionVo">
+        UPDATE `t_report_question`
+        <set>
+               <if test="source.questionId != null">
+                   `question_id` = #{source.questionId},
+               </if>
+               <if test="source.questionName != null">
+                   `question_name` = #{source.questionName},
+               </if>
+               <if test="source.reason != null">
+                   `reason` = #{source.reason}
+               </if>
+        </set>
+        <where>
+            1 =1
+               AND `id` = #{target.id}
+        </where>
+    </update>
+
+</mapper>

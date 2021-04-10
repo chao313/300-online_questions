@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demomaster.dao.VQuestionFollowSumDAO">
+
+    <resultMap id="resultMap" type="demomaster.vo.VQuestionFollowSumVo">
+        <result column="follow_sum" property="followSum"/>
+        <result column="question_id" property="questionId"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="demomaster.vo.VQuestionFollowSumVo">
+        INSERT INTO `v_question_follow_sum`(
+        `follow_sum` ,
+        `question_id` 
+        )VALUE(
+          #{followSum}  ,
+          #{questionId}  
+        )
+    </insert>
+
+    <insert id="inserts"
+            parameterType="java.util.List">
+        INSERT INTO `v_question_follow_sum`(
+        `follow_sum`,
+        `question_id`
+        )VALUES
+        <foreach collection="vos" item="item" separator=",">
+            (
+            #{item.followSum},
+            #{item.questionId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryBase" resultMap="resultMap"
+            resultType="demomaster.vo.VQuestionFollowSumVo"
+            parameterType="demomaster.vo.VQuestionFollowSumVo">
+        SELECT
+        `follow_sum`,
+        `question_id`
+        FROM `v_question_follow_sum`
+        <where>
+            1 = 1
+            <if test="followSum != null">
+                AND `follow_sum` = #{followSum}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBase"
+            parameterType="demomaster.vo.VQuestionFollowSumVo">
+        UPDATE `v_question_follow_sum`
+        <set>
+            <if test="source.followSum != null">
+                `follow_sum` = #{source.followSum},
+            </if>
+            <if test="source.questionId != null">
+                `question_id` = #{source.questionId}
+            </if>
+        </set>
+        <where>
+            1 =1
+            <if test="target.followSum != null">
+                AND `follow_sum` = #{target.followSum}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateBaseIncludeNull"
+            parameterType="demomaster.vo.VQuestionFollowSumVo">
+        UPDATE `v_question_follow_sum`
+        <set>
+            `follow_sum` = #{source.followSum},
+            `question_id` = #{source.questionId}
+        </set>
+        <where>
+            1 =1
+            <if test="target.followSum != null">
+                AND `follow_sum` = #{target.followSum}
+            </if>
+            <if test="target.questionId != null">
+                AND `question_id` = #{target.questionId}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteBase"
+            parameterType="demomaster.vo.VQuestionFollowSumVo">
+        DELETE FROM `v_question_follow_sum`
+        <where>
+            1 =1
+            <if test="followSum != null">
+                AND `follow_sum` = #{followSum}
+            </if>
+            <if test="questionId != null">
+                AND `question_id` = #{questionId}
+            </if>
+        </where>
+    </delete>
+
+
+</mapper>
