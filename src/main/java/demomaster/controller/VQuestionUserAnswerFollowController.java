@@ -154,15 +154,15 @@ public class VQuestionUserAnswerFollowController {
                                         @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
         Response response = new Response();
         try {
-//
-//            List<String> list = WordUtil.seg(word);
-//            list.add(word);
-//            PageHelper.startPage(pageNum, pageSize);
-//            List<VQuestionUserAnswerFollowVo> result = service.queryByContentLike(query, list);
-//            PageInfo pageInfo = new PageInfo(result);
-//            response.setCode(Code.System.OK);
-//            response.setContent(pageInfo);
-//            log.info("success pageInfo -> {} ", pageInfo);
+
+            List<String> list = WordUtil.seg(word);
+            list.add(word);
+            PageHelper.startPage(pageNum, pageSize);
+            List<VQuestionUserAnswerFollowVo> result = service.queryByContentLike(query, list);
+            PageInfo pageInfo = new PageInfo(result);
+            response.setCode(Code.System.OK);
+            response.setContent(pageInfo);
+            log.info("success pageInfo -> {} ", pageInfo);
         } catch (Exception e) {
             response.setCode(Code.System.FAIL);
             response.setMsg(e.getMessage());
